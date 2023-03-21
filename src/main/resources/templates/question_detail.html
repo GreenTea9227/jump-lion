@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html layout:decorate="~{layout}">
+<html layout:decorate="~{layout}" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -17,6 +18,15 @@
                     <div th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></div>
                 </div>
             </div>
+            <div class="my-3">
+                <a th:href="@{|/question/modify/${question.id}|}" class="btn btn-outline-secondary"
+                   sec:authorize="isAuthenticated()" th:if="${question.author != null
+                   and #authentication.getPrincipal() == question.author.username}" th:text="수정"></a>
+                <a href="javascript:void(0)" th:data-uri="@{|/question/delete/${question.id}|}"
+                   class="delete btn btn-sm btn-outline-secondary"
+                   sec:authorize="isAuthenticated()" th:if="${question.author != null
+                   and #authentication.getPrincipal() == question.author.username}" th:text="삭제"></a>
+            </div>
         </div>
     </div>
     <!-- 답변의 갯수 표시 -->
@@ -28,8 +38,21 @@
             <div class="card-text" style="white-space: pre-line;" th:text="${answer.content}"></div>
             <div class="d-flex justify-content-end">
                 <div class="badge bg-light text-dark p-2 text-start">
+                    <div class="mb-2">
+                        <span th:if="${question.author != null}" th:text="${question.author.username}"></span>
+                    </div>
                     <div th:text="${#temporals.format(answer.createDate, 'yyyy-MM-dd HH:mm')}"></div>
                 </div>
+            </div>
+            <div class="my-3">
+                <a th:href="@{|/answer/modify/${answer.id}|}" class="btn btn-outline-secondary"
+                   sec:authorize="isAuthenticated()" th:if="${answer.author != null
+                   and #authentication.getPrincipal() == answer.author.username}" th:text="수정"></a>
+
+                <a href="javascript:void(0)" th:data-uri="@{|/answer/delete/${answer.id}|}"
+                   class="delete btn btn-sm btn-outline-secondary"
+                   sec:authorize="isAuthenticated()" th:if="${answer.author != null
+                   and #authentication.getPrincipal() == answer.author.username}" th:text="삭제"></a>
             </div>
         </div>
     </div>
@@ -41,5 +64,24 @@
         <input type="submit" value="답변등록" class="btn btn-primary my-2">
     </form>
 </div>
+<script layout:fragment="script" type='text/javascript'>
+    const $delete = document.querySelectorAll(".delete");
+
+    $delete.forEach(h => h.addEventListener('click', function (e) {
+        console.log("click!!!");
+        console.log(e.target.dataset.uri);
+        if (confirm("정말로 삭제하시겠습니까?")) {
+            location.href = e.target.dataset.uri;
+
+        }
+    }));
+
+    // $delete.addEventListener('click', function () {
+    //     console.log("click!!!");
+    //     if (confirm("정말로 삭제하시겠습니까?")) {
+    //         location.href = this.dataset.uri;
+    //     }
+    // });
+</script>
 </body>
 </html>

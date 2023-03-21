@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html layout:decorate="~{layout}" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html layout:decorate="~{layout}" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -10,22 +11,23 @@
 <div layout:fragment="content" class="container my-3">
     <table class="table">
         <thead class="table-dark">
-        <tr>
+        <tr class="text-center">
             <th th:text="#{question.index}"></th>
-            <th th:text="#{question.subject}"></th>
+            <th style="width:50%" th:text="#{question.subject}"></th>
+            <th th:text="#{question.author}"></th>
             <th th:text="#{question.createDate}"></th>
         </tr>
         </thead>
         <tbody >
-            <tr th:each="question ,loop : ${paging}">
+            <tr class="text-center" th:each="question ,loop : ${paging}">
                 <td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}"></td>
-                <td>
+                <td class="center">
                     <a th:href="@{|/question/detail/${question.id}|}" th:text="${question.subject}"></a>
                     <span class="text-danger small ms-2"
                           th:if="${#lists.size(question.answers) > 0}" th:text="${#lists.size(question.answers)}">
                     </span>
                 </td>
-
+                <td><span th:if="${question.author != null}" th:text="${question.author.username}"></span></td>
                 <td th:text="${#temporals.format(question.createDate,'yyyy-MM-dd HH:mm')}"></td>
             </tr>
         </tbody>
@@ -38,7 +40,7 @@
                 </a>
             </li>
             <li th:each = "page : ${#numbers.sequence(0, paging.totalPages -1)}"
-                th:if="${page >= paging.number-5 and page <= paging.number+5}"
+                th:if="${page >= paging.number -5 and page <= paging.number+5}"
                 th:classappend="${page == paging.number} ? active" class="page-item">
                 <a th:href="@{|?page=${page}|}" class = "page-link" th:text="${page}"></a>
             </li>

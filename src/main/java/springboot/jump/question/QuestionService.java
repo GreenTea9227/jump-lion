@@ -43,4 +43,15 @@ public class QuestionService {
                 PageRequest.of(page, 10, Sort.by(Sort.Order.desc("createDate")));
         return questionRepository.findAll(pageRequest);
     }
+
+    public void modify(Question question ,QuestionForm questionForm) {
+        question.setSubject(questionForm.getSubject());
+        question.setContent(questionForm.getContent());
+        //TODO
+        questionRepository.save(question);
+    }
+
+    public void delete(Question question) {
+        questionRepository.delete(question);
+    }
 }

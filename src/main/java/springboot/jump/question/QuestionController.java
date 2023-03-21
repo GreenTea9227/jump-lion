@@ -1,12 +1,18 @@
 package springboot.jump.question;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import springboot.jump.answer.AnswerForm;
 import springboot.jump.resolver.CreateQuestion;
 import springboot.jump.resolver.QuestionForm;
@@ -15,6 +21,7 @@ import springboot.jump.user.UserService;
 
 import java.security.Principal;
 
+@Slf4j
 @RequestMapping("/question")
 @RequiredArgsConstructor
 @Controller
@@ -54,5 +61,45 @@ public class QuestionController {
 
         questionService.create(questionForm, siteUser);
         return "redirect:/question/list";
+    }
+
+    @GetMapping("/modify/{id}")
+    public String questionModify(QuestionForm questionForm, @PathVariable Long id,
+                                  UsernamePasswordAuthenticationToken auth) {
+        log.info("authentication ={}",auth);
+        Question question = questionService.getQuestion(id);
+        if (!question.getAuthor().getUsername().equals(auth.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"수정 권한이 없습니다.");
+        }
+        questionForm.setSubject(question.getSubject());
+        questionForm.setContent(question.getContent());
+        return "question_form";
+    }
+
+    @PostMapping("/modify/{id}")
+    public String questionModify(@Validated QuestionForm questionForm, BindingResult bindingResult,
+                                 @PathVariable Long id,  UsernamePasswordAuthenticationToken auth) {
+
+        log.info("authentication ={}",auth);
+        if (bindingResult.hasErrors()) {
+            return "question_form";
+        }
+        Question question = questionService.getQuestion(id);
+
+        if (!question.getAuthor().getUsername().equals(auth.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"수정 권한이 없습니다.");
+        }
+        questionService.modify(question,questionForm);
+        return "redirect:/question/detail/{id}";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String questionDelete(Principal principal, @PathVariable Long id) {
+        Question question = questionService.getQuestion(id);
+        if (!question.getAuthor().getUsername().equals(principal.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"삭제권한이 없습니다.");
+        }
+        questionService.delete(question);
+        return "redirect:/";
     }
 }

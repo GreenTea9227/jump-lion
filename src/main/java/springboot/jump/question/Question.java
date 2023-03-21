@@ -34,7 +34,7 @@ public class Question extends BaseTime {
 
     @Builder
     public Question(String subject, String content, SiteUser siteUser) {
-        this.subject = subject;
+        this.author = siteUser;
         this.content = content;
         this.subject = subject;
     }
