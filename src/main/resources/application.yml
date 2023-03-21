@@ -1,0 +1,6 @@
+spring:
+  profiles:
+    include: private
+    active: dev
+
+---
