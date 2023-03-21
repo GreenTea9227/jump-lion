@@ -2,6 +2,7 @@ package springboot.jump.answer;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,11 +30,12 @@ class AnswerServiceTest {
     QuestionRepository questionRepository;
 
     @AfterEach
-    void delete() {
+    void deleteAll() {
         answerRepository.deleteAll();
     }
 
     @Test
+    @DisplayName("Answer 객체 저장")
     void create() {
         //given
         String content = "content";
@@ -54,5 +56,70 @@ class AnswerServiceTest {
 
         assertThat(answer.getContent()).isEqualTo("change");
         assertThat(answer.getQuestion()).isEqualTo(question);
+    }
+
+    @Test
+    @DisplayName("Answer 객체 가져오기")
+    void getAnswer() {
+        //given
+        Answer answer = Answer.builder()
+                .content("content").build();
+
+        //when
+        answerRepository.save(answer);
+        Answer findAnswer = answerService.getAnswer(answer.getId());
+
+        //then
+        assertThat(findAnswer).isNotNull();
+        assertThat(findAnswer.getContent()).isEqualTo("content");
+    }
+
+    @Test
+    @DisplayName("Answer 객체 수정")
+    void modify() {
+        //given
+        String content = "content";
+        String subject = "subject";
+        Question question = Question.builder()
+                .content(content)
+                .subject(subject).build();
+        questionRepository.save(question);
+
+
+        Answer answer = Answer.builder()
+                .question(question)
+                .content("content")
+                .build();
+        answerRepository.save(answer);
+
+        //when
+        Answer findAnswer = answerService.getAnswer(answer.getId());
+
+        String newContent = "new content";
+        answerService.modify(findAnswer, newContent);
+
+        Answer changedAnswer = answerService.getAnswer(answer.getId());
+
+        //then
+        assertThat(changedAnswer).isNotNull();
+        assertThat(changedAnswer.getContent()).isEqualTo(newContent);
+    }
+
+    @Test
+    @DisplayName("Answer 객체 삭제")
+    void delete() {
+        //given
+        Answer answer = Answer.builder()
+                .content("content")
+                .build();
+        answerRepository.save(answer);
+
+        //when
+        answerService.delete(answer.getId());
+
+        //then
+        Optional<Answer> findAnswer = answerRepository.findById(answer.getId());
+
+        assertThat(findAnswer).isEmpty();
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import springboot.jump.resolver.QuestionForm;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -89,5 +90,49 @@ class QuestionServiceTest {
         assertThat(page.hasPrevious()).isTrue();
     }
 
+    @Test
+    @DisplayName("page test")
+    void modify() {
+        //given
+        String subject = "subject";
+        String content = "content";
 
+        QuestionForm questionForm = new QuestionForm(subject,content);
+        questionService.create(questionForm,null);
+
+        List<Question> all = questionRepository.findAll();
+        Question question = all.get(0);
+
+        //when
+        String newContent = "new content";
+        String newSubject = "new subject";
+        QuestionForm newQuestionForm = new QuestionForm(newSubject,newContent);
+
+        questionService.modify(question,newQuestionForm);
+
+        //then
+        Long id = question.getId();
+        Question changedQuestion = questionService.getQuestion(id);
+        assertThat(changedQuestion).isNotNull();
+        assertThat(changedQuestion.getSubject()).isEqualTo(newSubject);
+        assertThat(changedQuestion.getContent()).isEqualTo(newContent);
+    }
+
+
+    @Test
+    @DisplayName("page test")
+    void delete() {
+        //given
+        Question save = questionRepository.save(Question.builder()
+                .subject("subject")
+                .content("content")
+                .build());
+        //when
+        questionService.delete(save);
+
+        //then
+        Optional<Question> findQuestion = questionRepository.findById(save.getId());
+
+        assertThat(findQuestion).isEmpty();
+    }
 }
