@@ -8,7 +8,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springboot.jump.question.Question;
 import springboot.jump.question.QuestionRepository;
-import springboot.jump.resolver.QuestionResolver;
+import springboot.jump.util.resolver.QuestionResolver;
 
 import java.util.List;
 

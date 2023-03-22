@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests(auth ->
                         auth
-                                .requestMatchers("/question/list", "/user/signup",
+                                .requestMatchers("/question/list", "/user/**",
                                         "/error", "/", "/image/**", "/css/**").permitAll()
                                 .anyRequest().authenticated());
         http.logout()

@@ -5,8 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,8 +12,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import springboot.jump.answer.AnswerForm;
-import springboot.jump.resolver.CreateQuestion;
-import springboot.jump.resolver.QuestionForm;
+import springboot.jump.util.resolver.CreateQuestion;
+import springboot.jump.util.resolver.QuestionForm;
 import springboot.jump.user.SiteUser;
 import springboot.jump.user.UserService;
 
@@ -31,31 +29,32 @@ public class QuestionController {
     private final UserService userService;
 
     @GetMapping("/list")
-    public String list(Model model, @RequestParam(defaultValue = "0") int page) {
+    public String list(Model model, @RequestParam(defaultValue = "0") int page,
+                       @RequestParam(defaultValue = "") String kw) {
 
-        Page<Question> paging = questionService.getList(page);
+        Page<Question> paging = questionService.getList(page,kw);
         model.addAttribute("paging", paging);
 
-        return "question_list";
+        return "question/question_list";
     }
 
     @GetMapping("/detail/{id}")
     public String detail(Model model, @PathVariable Long id, AnswerForm answerForm) {
         Question question = questionService.getQuestion(id);
         model.addAttribute("question", question);
-        return "question_detail";
+        return "question/question_detail";
     }
 
     @GetMapping("/create")
     public String questionCreate(QuestionForm questionForm) {
-        return "question_form";
+        return "question/question_form";
     }
 
     @PostMapping("/create")
     public String questionCreate(@Validated @CreateQuestion QuestionForm questionForm, BindingResult bindingResult,
                                  Principal principal) {
         if (bindingResult.hasErrors()) {
-            return "question_form";
+            return "question/question_form";
         }
         SiteUser siteUser = userService.getUser(principal.getName());
 
@@ -73,7 +72,7 @@ public class QuestionController {
         }
         questionForm.setSubject(question.getSubject());
         questionForm.setContent(question.getContent());
-        return "question_form";
+        return "question/question_form";
     }
 
     @PostMapping("/modify/{id}")
@@ -82,7 +81,7 @@ public class QuestionController {
 
         log.info("authentication ={}",auth);
         if (bindingResult.hasErrors()) {
-            return "question_form";
+            return "question/question_form";
         }
         Question question = questionService.getQuestion(id);
 

@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import springboot.jump.exception.DataNotFoundException;
 import springboot.jump.question.Question;
 import springboot.jump.question.QuestionService;
 import springboot.jump.user.SiteUser;
@@ -38,7 +37,7 @@ public class AnswerController {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("question", question);
-            return "question_detail";
+            return "question/question_detail";
         }
 
         Answer answer = answerService.create(question, answerForm.getContent(), siteUser);
@@ -54,14 +53,14 @@ public class AnswerController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"수정권한이 없습니다.");
         }
         answerForm.setContent(answer.getContent());
-        return "answer_form";
+        return "answer/answer_form";
     }
 
     @PostMapping("/modify/{id}")
     public String answerModify(@Validated AnswerForm answerForm, BindingResult bindingResult,
                                @PathVariable Long id, Principal principal) {
         if (bindingResult.hasErrors()) {
-            return "answer_form";
+            return "answer/answer_form";
         }
 
         Answer answer = answerService.getAnswer(id);
