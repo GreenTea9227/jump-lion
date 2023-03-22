@@ -7,6 +7,7 @@ import springboot.jump.question.Question;
 import springboot.jump.user.SiteUser;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -26,7 +27,9 @@ public class Answer extends BaseTime {
     @ManyToOne
     private SiteUser author;
 
-    private LocalDateTime createDate;
+    //    private LocalDateTime createDate;
+    @ManyToMany
+    private Set<SiteUser> voter;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Question question;

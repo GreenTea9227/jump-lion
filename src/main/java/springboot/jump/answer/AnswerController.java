@@ -41,9 +41,10 @@ public class AnswerController {
             return "question_detail";
         }
 
-        //TODO 답변 저장
-        answerService.create(question, answerForm.getContent(), siteUser);
-        return "redirect:/question/detail/{id}";
+        Answer answer = answerService.create(question, answerForm.getContent(), siteUser);
+
+        return String.format("redirect:/question/detail/%s#answer_%s",
+                answer.getQuestion().getId(), answer.getId());
     }
 
     @GetMapping("/modify/{id}")
@@ -58,7 +59,7 @@ public class AnswerController {
 
     @PostMapping("/modify/{id}")
     public String answerModify(@Validated AnswerForm answerForm, BindingResult bindingResult,
-                               @PathVariable Long id, Principal principal, RedirectAttributes redirectAttributes) {
+                               @PathVariable Long id, Principal principal) {
         if (bindingResult.hasErrors()) {
             return "answer_form";
         }
@@ -69,12 +70,12 @@ public class AnswerController {
         }
 
         Long questionId = answerService.modify(answer, answerForm.getContent());
-        redirectAttributes.addAttribute("questionId",questionId);
-        return "redirect:/question/detail/{questionId}";
+        return String.format("redirect:/question/detail/%s#answer_%s",
+                answer.getQuestion().getId(), answer.getId());
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable Long id,Principal principal,RedirectAttributes redirectAttributes) {
+    public String delete(@PathVariable Long id,Principal principal ) {
 
         Answer answer = answerService.getAnswer(id);
 
@@ -85,8 +86,16 @@ public class AnswerController {
         answerService.delete(id);
 
         Long questionId = answer.getQuestion().getId();
-        redirectAttributes.addAttribute("questionId",questionId);
-        return "redirect:/question/detail/{questionId}";
+        return String.format("redirect:/question/detail/%s#answer_%s",
+                answer.getQuestion().getId(), answer.getId());
+    }
+
+    @GetMapping("/vote/{id}")
+    public String vote(@PathVariable Long id, Principal principal,RedirectAttributes redirectAttributes) {
+        Long questionId = answerService.vote(id, principal);
+
+        redirectAttributes.addAttribute("id",questionId);
+        return "redirect:/question/detail/{id}";
     }
 
 

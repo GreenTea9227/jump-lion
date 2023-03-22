@@ -102,4 +102,12 @@ public class QuestionController {
         questionService.delete(question);
         return "redirect:/";
     }
+
+    @GetMapping("/vote/{id}")
+    public String questionVote(Principal principal,@PathVariable Long id) {
+        Question question = questionService.getQuestion(id);
+        SiteUser user = userService.getUser(principal.getName());
+        questionService.vote(question,user);
+        return String.format("redirect:/question/detail/%s",id);
+    }
 }

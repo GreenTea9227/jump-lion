@@ -12,7 +12,7 @@
     <h2 class="border-bottom py-2" th:text="${question.subject}"></h2>
     <div class="card my-3">
         <div class="card-body">
-            <div class="card-text" style="white-space: pre-line;" th:text="${question.content}"></div>
+            <div class="card-text" th:utext="${@commonUtil.markdown(question.content)}"></div>
             <div class="d-flex justify-content-end">
                 <div th:if="${question.modifiedDate != null}" class="badge bg-light text-dark p-2 text-start mx-3">
                     <div class="mb-2">modified at</div>
@@ -23,6 +23,10 @@
                 </div>
             </div>
             <div class="my-3">
+                <button href="javascript:void(0);" class="recommend btn btn-sm btn-outline-secondary"
+                   th:data-uri="@{|/question/vote/${question.id}|}" th:text="#{question.vote}">
+                </button>
+                <span class="badge rounded-pill bg-success" th:text="${#lists.size(question.voter)}"></span>
                 <a th:href="@{|/question/modify/${question.id}|}" class="btn btn-outline-secondary"
                    sec:authorize="isAuthenticated()" th:if="${question.author != null
                    and #authentication.getPrincipal() == question.author.username}" th:text="수정"></a>
@@ -38,8 +42,9 @@
         th:text="|${#lists.size(question.answers)}개의 답변이 있습니다.|"></h5>
     <!-- 답변 반복 시작 -->
     <div class="card my-3" th:each="answer : ${question.answers}">
+        <a th:id = "|answer_${answer.id}|"></a>
         <div class="card-body">
-            <div class="card-text" style="white-space: pre-line;" th:text="${answer.content}"></div>
+            <div class="card-text" th:utext="${@commonUtil.markdown(answer.content)}"></div>
             <div class="d-flex justify-content-end">
                 <div class="badge bg-light text-dark p-2 text-start">
                     <div class="mb-2">
@@ -49,6 +54,13 @@
                 </div>
             </div>
             <div class="my-3">
+
+                <button href="javascript:void(0);" class="recommend btn btn-sm btn-outline-secondary"
+                th:data-uri="@{|/answer/vote/${answer.id}|}" th:text="#{answer.vote}">
+                </button>
+                <span class="badge rounded-pill bg-success" th:text="${#lists.size(answer.voter)}">
+                </span>
+
                 <a th:href="@{|/answer/modify/${answer.id}|}" class="btn btn-outline-secondary"
                    sec:authorize="isAuthenticated()" th:if="${answer.author != null
                    and #authentication.getPrincipal() == answer.author.username}" th:text="수정"></a>
@@ -80,12 +92,15 @@
         }
     }));
 
-    // $delete.addEventListener('click', function () {
-    //     console.log("click!!!");
-    //     if (confirm("정말로 삭제하시겠습니까?")) {
-    //         location.href = this.dataset.uri;
-    //     }
-    // });
+    const $recommend = document.querySelectorAll(".recommend");
+
+    $recommend.forEach(h => h.addEventListener('click',(e) => {
+        if (confirm("정말로 추천하시겠습니까?")) {
+            console.log(e.target.dataset.uri);
+            location.href = e.target.dataset.uri;
+        }
+    }))
+
 </script>
 </body>
 </html>

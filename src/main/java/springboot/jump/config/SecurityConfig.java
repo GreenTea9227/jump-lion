@@ -51,7 +51,8 @@ public class SecurityConfig {
                 .invalidateHttpSession(true)
                 .clearAuthentication(true);
 
-        http.csrf().ignoringRequestMatchers("/h2-console/**")
+        http.csrf()
+                .ignoringRequestMatchers("/h2-console/**")
                 .and()
                 .headers()
                 .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN));
