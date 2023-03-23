@@ -5,8 +5,6 @@ import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 import org.springframework.stereotype.Component;
 
-
-
 @Component
 public class CommonUtil {
 

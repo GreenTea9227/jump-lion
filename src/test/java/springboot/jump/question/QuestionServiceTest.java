@@ -11,7 +11,7 @@ import springboot.jump.util.resolver.QuestionForm;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -21,7 +21,6 @@ class QuestionServiceTest {
     private QuestionRepository questionRepository;
     @Autowired
     private QuestionService questionService;
-
 
     @Test
     @DisplayName("10개 넣고 getList시 10개 반환 확인")
@@ -60,8 +59,8 @@ class QuestionServiceTest {
         String subject = "subject";
         String content = "content";
 
-        QuestionForm questionForm = new QuestionForm(subject,content);
-        questionService.create(questionForm,null);
+        QuestionForm questionForm = new QuestionForm(subject, content);
+        questionService.create(questionForm, null);
 
         Question findQuestion = questionRepository.findBySubject(subject);
         assertThat(findQuestion.getContent()).isEqualTo(content);
@@ -93,8 +92,8 @@ class QuestionServiceTest {
         String subject = "subject";
         String content = "content";
 
-        QuestionForm questionForm = new QuestionForm(subject,content);
-        questionService.create(questionForm,null);
+        QuestionForm questionForm = new QuestionForm(subject, content);
+        questionService.create(questionForm, null);
 
         List<Question> all = questionRepository.findAll();
         Question question = all.get(0);
@@ -102,9 +101,9 @@ class QuestionServiceTest {
         //when
         String newContent = "new content";
         String newSubject = "new subject";
-        QuestionForm newQuestionForm = new QuestionForm(newSubject,newContent);
+        QuestionForm newQuestionForm = new QuestionForm(newSubject, newContent);
 
-        questionService.modify(question,newQuestionForm);
+        questionService.modify(question, newQuestionForm);
 
         //then
         Long id = question.getId();
@@ -113,7 +112,6 @@ class QuestionServiceTest {
         assertThat(changedQuestion.getSubject()).isEqualTo(newSubject);
         assertThat(changedQuestion.getContent()).isEqualTo(newContent);
     }
-
 
     @Test
     @DisplayName("page test")

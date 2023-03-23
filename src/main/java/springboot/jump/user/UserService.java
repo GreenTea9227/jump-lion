@@ -60,6 +60,5 @@ public class UserService {
             throw new DataNotFoundException("데이터 없음");
 
         siteUser.setPassword(passwordEncoder.encode(changePasswordForm.getPassword()));
-
     }
 }

@@ -3,6 +3,8 @@ package springboot.jump.user;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 @Builder
@@ -27,4 +29,17 @@ public class SiteUser {
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SiteUser siteUser = (SiteUser) o;
+        return Objects.equals(getId(), siteUser.getId()) && Objects.equals(getUsername(), siteUser.getUsername()) && Objects.equals(getPassword(), siteUser.getPassword()) && Objects.equals(getEmail(), siteUser.getEmail()) && getRole() == siteUser.getRole();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getUsername(), getPassword(), getEmail(), getRole());
+    }
 }

@@ -1,38 +1,23 @@
 package springboot.jump.question;
 
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithAnonymousUser;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultHandler;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.result.PrintingResultHandler;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.RequestHandledEvent;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class QuestionControllerTest {
 
     private MockMvc mvc;
-
 
     @Autowired
     private WebApplicationContext context; // MockMvc 객체 생성을 위한 context
@@ -48,10 +33,9 @@ class QuestionControllerTest {
 //    }
 
     @BeforeEach
-    public  void setMvc() {
+    public void setMvc() {
         mvc = MockMvcBuilders.webAppContextSetup(context)
                 .build();
-
     }
 
     @Test
@@ -62,12 +46,13 @@ class QuestionControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andDo(print());
     }
+
     @Test
     @DisplayName(" /question/list로 갈시 model안에 paging 확인")
     void list() throws Exception {
         mvc.perform(get("/question/list"))
                 .andExpect(model().attributeExists("paging"))
-                .andExpect(view().name("question_list"))
+                .andExpect(view().name("uestion/question_list"))
                 .andExpect(status().isOk());
     }
 
@@ -76,7 +61,6 @@ class QuestionControllerTest {
     void detail() throws Exception {
         mvc.perform(post("/no/404/page"))
                 .andExpect(status().is4xxClientError());
-
     }
 
 //    @Test

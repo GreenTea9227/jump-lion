@@ -4,11 +4,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import springboot.jump.answer.Answer;
 import springboot.jump.basetime.BaseTime;
+import springboot.jump.manytomany.QuestionSiteUser;
 import springboot.jump.user.SiteUser;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,8 +29,11 @@ public class Question extends BaseTime {
     @ManyToOne
     private SiteUser author;
 
-    @ManyToMany
-    private Set<SiteUser> voter;
+//    @ManyToMany
+//    private Set<SiteUser> voter;
+
+    @OneToMany(mappedBy = "question")
+    private Set<QuestionSiteUser> voter = new HashSet<>();
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private List<Answer> answers = new ArrayList<>();
@@ -41,5 +43,18 @@ public class Question extends BaseTime {
         this.author = siteUser;
         this.content = content;
         this.subject = subject;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Question question = (Question) o;
+        return Objects.equals(getId(), question.getId()) && Objects.equals(getSubject(), question.getSubject()) && Objects.equals(getContent(), question.getContent()) && Objects.equals(getAuthor(), question.getAuthor());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getSubject(), getContent(), getAuthor());
     }
 }

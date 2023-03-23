@@ -10,10 +10,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import springboot.jump.answer.Answer;
 import springboot.jump.exception.DataNotFoundException;
-import springboot.jump.util.resolver.QuestionForm;
+import springboot.jump.manytomany.AnswerSiteUserRepository;
+import springboot.jump.manytomany.QuestionSiteUser;
+import springboot.jump.manytomany.QuestionSiteUserRepository;
 import springboot.jump.user.SiteUser;
+import springboot.jump.util.resolver.QuestionForm;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Transactional
@@ -21,9 +25,18 @@ import java.util.List;
 public class QuestionService {
 
     private final QuestionRepository questionRepository;
+    private final QuestionSiteUserRepository questionSiteUserRepository;
+    private final AnswerSiteUserRepository answerSiteUserRepository;
 
     public List<Question> getList() {
         return questionRepository.findAll();
+    }
+
+    public Page<Question> getList(int page) {
+
+        PageRequest pageRequest =
+                PageRequest.of(page, 10, Sort.by(Sort.Order.desc("createDate")));
+        return questionRepository.findAll(pageRequest);
     }
 
     public Question getQuestion(Long id) {
@@ -41,14 +54,14 @@ public class QuestionService {
         questionRepository.save(question);
     }
 
-    public Page<Question> getList(int page,String kw) {
+    public Page<Question> getList(int page, String kw) {
         PageRequest pageRequest =
                 PageRequest.of(page, 10, Sort.by(Sort.Order.desc("createDate")));
         Specification<Question> spec = search(kw);
-        return questionRepository.findAll(spec,pageRequest);
+        return questionRepository.findAll(spec, pageRequest);
     }
 
-    public void modify(Question question ,QuestionForm questionForm) {
+    public void modify(Question question, QuestionForm questionForm) {
         question.setSubject(questionForm.getSubject());
         question.setContent(questionForm.getContent());
         //TODO
@@ -59,14 +72,34 @@ public class QuestionService {
         questionRepository.delete(question);
     }
 
-    public void vote(Question question,SiteUser siteUser) {
-        question.getVoter().add(siteUser);
-        questionRepository.save(question);
+    public void vote(Long id, SiteUser siteUser) {
+        Question question = questionRepository
+                .findById(id)
+                .orElseThrow(() -> new DataNotFoundException("데이터 없음"));
+
+        //questionId로 찾기
+
+        List<QuestionSiteUser> listQuestion = questionSiteUserRepository.findByQuestionId(question.getId());
+
+        Optional<QuestionSiteUser> find =
+                listQuestion.stream().filter(e -> e.getSiteUser().equals(siteUser)).findAny();
+        //추천한 적 없다면 save
+        if (find.isEmpty()) {
+            QuestionSiteUser newQuestionsiteUser = QuestionSiteUser
+                    .builder()
+                    .siteUser(siteUser)
+                    .question(question)
+                    .build();
+            questionSiteUserRepository.save(newQuestionsiteUser);
+
+            question.getVoter().add(newQuestionsiteUser);
+        }
     }
 
     private Specification<Question> search(String kw) {
         return new Specification<>() {
             private static final long serialVersionUID = 1L;
+
             @Override
             public Predicate toPredicate(Root<Question> q, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 query.distinct(true);  // 중복을 제거

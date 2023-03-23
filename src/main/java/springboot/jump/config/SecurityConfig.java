@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests(auth ->
                         auth
+                                .requestMatchers("/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/question/list", "/user/**",
                                         "/error", "/", "/image/**", "/css/**").permitAll()
                                 .anyRequest().authenticated());
@@ -51,6 +52,7 @@ public class SecurityConfig {
                 .invalidateHttpSession(true)
                 .clearAuthentication(true);
 
+        // "/user/logout" -> 이거 넣어보기
         http.csrf()
                 .ignoringRequestMatchers("/h2-console/**")
                 .and()
@@ -78,7 +80,6 @@ public class SecurityConfig {
 
     @Bean
     public UserProvider userProvider() {
-        //TODO 문제 생기면 여기 확인
         return new UserProvider(userSecurityService, passwordEncoder());
     }
 }

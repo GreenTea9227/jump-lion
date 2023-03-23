@@ -1,6 +1,5 @@
 package springboot.jump.user;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,8 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
 @SpringBootTest
@@ -17,6 +15,7 @@ class UserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
+
     @Test
     void findByUsername() {
         //givne
@@ -40,6 +39,5 @@ class UserRepositoryTest {
         assertThat(siteUser.getUsername()).isEqualTo(username);
         assertThat(siteUser.getEmail()).isEqualTo(email);
         assertThat(siteUser.getPassword()).isEqualTo(password);
-
     }
 }

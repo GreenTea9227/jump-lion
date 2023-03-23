@@ -1,21 +1,18 @@
 package springboot.jump.answer;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import springboot.jump.exception.DataNotFoundException;
 import springboot.jump.question.Question;
 import springboot.jump.question.QuestionRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -47,7 +44,7 @@ class AnswerServiceTest {
         System.out.println(question);
 
         //when
-        answerService.create(question,"change",null);
+        answerService.create(question, "change", null);
 
         //then
         List<Answer> all = answerRepository.findAll();
@@ -84,7 +81,6 @@ class AnswerServiceTest {
                 .content(content)
                 .subject(subject).build();
         questionRepository.save(question);
-
 
         Answer answer = Answer.builder()
                 .question(question)

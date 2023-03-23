@@ -47,10 +47,10 @@ public class AnswerController {
     }
 
     @GetMapping("/modify/{id}")
-    public String answerModify(AnswerForm answerForm, @PathVariable Long id,Principal principal) {
+    public String answerModify(AnswerForm answerForm, @PathVariable Long id, Principal principal) {
         Answer answer = answerService.getAnswer(id);
         if (!answer.getAuthor().getUsername().equals(principal.getName())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"수정권한이 없습니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
         answerForm.setContent(answer.getContent());
         return "answer/answer_form";
@@ -65,7 +65,7 @@ public class AnswerController {
 
         Answer answer = answerService.getAnswer(id);
         if (!answer.getAuthor().getUsername().equals(principal.getName())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"수정권한이 없습니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
 
         Long questionId = answerService.modify(answer, answerForm.getContent());
@@ -74,12 +74,12 @@ public class AnswerController {
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable Long id,Principal principal ) {
+    public String delete(@PathVariable Long id, Principal principal) {
 
         Answer answer = answerService.getAnswer(id);
 
         if (!answer.getAuthor().getUsername().equals(principal.getName())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"삭제권한이 없습니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제권한이 없습니다.");
         }
 
         answerService.delete(id);
@@ -90,15 +90,10 @@ public class AnswerController {
     }
 
     @GetMapping("/vote/{id}")
-    public String vote(@PathVariable Long id, Principal principal,RedirectAttributes redirectAttributes) {
+    public String vote(@PathVariable Long id, Principal principal, RedirectAttributes redirectAttributes) {
         Long questionId = answerService.vote(id, principal);
 
-        redirectAttributes.addAttribute("id",questionId);
+        redirectAttributes.addAttribute("id", questionId);
         return "redirect:/question/detail/{id}";
     }
-
-
-
-
-
 }

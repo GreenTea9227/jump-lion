@@ -18,8 +18,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     Page<Question> findAll(Pageable pageable);
 
-    Page<Question> findAll(Specification<Question> spec,Pageable pageable);
-
+    Page<Question> findAll(Specification<Question> spec, Pageable pageable);
 
     @Query("select distinct q from Question q left join SiteUser s on q.author = s " +
             "left join Answer a on a.question = q " +
@@ -30,5 +29,5 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             "or s.username like %:kw% " +
             "or a.content like %:kw% " +
             "or s2.username like %:kw% ")
-    Page<Question> findAllByKeyword(@Param("kw") String kw , Pageable pageable);
+    Page<Question> findAllByKeyword(@Param("kw") String kw, Pageable pageable);
 }

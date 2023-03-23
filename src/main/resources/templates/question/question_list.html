@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html layout:decorate="~{layout/layout}" xmlns:layout="http://www.w3.org/1999/xhtml"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+>
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -30,18 +30,18 @@
             <th th:text="#{question.createDate}"></th>
         </tr>
         </thead>
-        <tbody >
-            <tr class="text-center" th:each="question ,loop : ${paging}">
-                <td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}"></td>
-                <td class="center">
-                    <a th:href="@{|/question/detail/${question.id}|}" th:text="${question.subject}"></a>
-                    <span class="text-danger small ms-2"
-                          th:if="${#lists.size(question.answers) > 0}" th:text="${#lists.size(question.answers)}">
+        <tbody>
+        <tr class="text-center" th:each="question ,loop : ${paging}">
+            <td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}"></td>
+            <td class="center">
+                <a th:href="@{|/question/detail/${question.id}|}" th:text="${question.subject}"></a>
+                <span class="text-danger small ms-2"
+                      th:if="${#lists.size(question.answers) > 0}" th:text="${#lists.size(question.answers)}">
                     </span>
-                </td>
-                <td><span th:if="${question.author != null}" th:text="${question.author.username}"></span></td>
-                <td th:text="${#temporals.format(question.createDate,'yyyy-MM-dd HH:mm')}"></td>
-            </tr>
+            </td>
+            <td><span th:if="${question.author != null}" th:text="${question.author.username}"></span></td>
+            <td th:text="${#temporals.format(question.createDate,'yyyy-MM-dd HH:mm')}"></td>
+        </tr>
         </tbody>
     </table>
     <div th:if="${!paging.isEmpty()}">
@@ -51,7 +51,7 @@
                     <span>이전</span>
                 </a>
             </li>
-            <li th:each = "page : ${#numbers.sequence(0, paging.totalPages -1)}"
+            <li th:each="page : ${#numbers.sequence(0, paging.totalPages -1)}"
                 th:if="${page >= paging.number -5 and page <= paging.number+5}"
                 th:classappend="${page == paging.number} ? active" class="page-item">
                 <a th:text="${page}" class="page-link" href="javascript:void(0)" th:data-page="${page}"></a>
@@ -72,14 +72,14 @@
 <script layout:fragment="script" type="text/javascript">
     const page_element = document.querySelectorAll(".page-link");
     page_element.forEach(function (element) {
-        element.addEventListener('click',function (){
+        element.addEventListener('click', function () {
             document.querySelector('#page').value = this.dataset.page;
             document.querySelector('#searchForm').submit();
         });
     });
 
     const btn_search = document.querySelector("#btn_search");
-    btn_search.addEventListener('click', function() {
+    btn_search.addEventListener('click', function () {
         document.getElementById('kw').value = document.getElementById('search_kw').value;
         document.getElementById('page').value = 0;  // 검색버튼을 클릭할 경우 0페이지부터 조회한다.
         document.getElementById('searchForm').submit();

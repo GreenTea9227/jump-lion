@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springboot.jump.util.MailService;
 
-import java.security.Principal;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -118,8 +117,7 @@ public class UserController {
     }
 
     @PostMapping("/changepwd")
-    public String changePwd(@Validated ChangePasswordForm changePasswordForm, BindingResult bindingResult,
-                            HttpServletRequest request) {
+    public String changePwd(@Validated ChangePasswordForm changePasswordForm, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             return "/user/change_password";
@@ -135,9 +133,18 @@ public class UserController {
         return "redirect:/user/login";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/user/authenticated/changepwd")
     public String changePasswordAuth(ChangePasswordForm changePasswordForm) {
         //TODO 나중에 authentication 객체를 따로 만들어서 email 넣어주기
+        return "/user/change_password";
+    }
+
+    //    @PreAuthorize("isAuthenticated() && #changePasswordForm.getEmail().equals(authentication.getName())")
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/user/authenticated/changepwd")
+    public String changePasswordAuth(@Validated ChangePasswordForm changePasswordForm, BindingResult bindingResult) {
+
         return "/user/change_password";
     }
 }
