@@ -1,4 +1,4 @@
-package springboot.jump.user;
+package springboot.jump.user.form;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

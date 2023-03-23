@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout/layout}" xmlns:layout="http://www.w3.org/1999/xhtml" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content" class="container my-3">
+    <div class="flex justify-content-end mb-3 mt-5">
+        <button type="button" class="btn btn-info change">정보변경</button>
+    </div>
+
+    <form class="row g-3 .bg-light.bg-gradient" th:action="@{|/user/profile|}" method="post"
+          name="form" th:object="${userDto}">
+        <div th:each="err : ${#fields.allErrors()}" th:object="${err}">
+            <span th:text="${err}"></span>
+        </div>
+
+        <div class="col-12">
+            <label for="username" class="form-label">username</label>
+            <input type="text" th:field="*{username}" class="form-control changeInput" id="username" disabled>
+        </div>
+        <div class="col-12">
+            <label for="inputEmail4" class="form-label">Email</label>
+            <input type="email" th:field="*{email}" class="form-control changeInput" id="inputEmail4" disabled>
+        </div>
+        <div class="col-md-6">
+            <label for="inputAddress" class="form-label">Role</label>
+            <input type="text" class="form-control" th:field="*{role}" id="inputAddress" placeholder="Role" disabled>
+        </div>
+        <div class="flex justify-content-end hiding d-none mt-3">
+            <button type="submit" class="btn btn-primary submit">제출</button>
+        </div>
+    </form>
+</div>
+<script layout:fragment="script" type="text/javascript">
+
+    let changeBtn = document.querySelector(".change");
+    changeBtn.addEventListener('click',function () {
+        let elementNodeListOf = document.querySelectorAll('.changeInput');
+         elementNodeListOf.forEach(n => {
+             n.disabled =false;
+         });
+         document.querySelector(".hiding").classList.remove("d-none");
+    });
+</script>
+</body>
+</html>
