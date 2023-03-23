@@ -1,4 +1,4 @@
-package springboot.jump.util;
+package springboot.jump.common.util;
 
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;

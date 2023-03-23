@@ -18,7 +18,7 @@ import springboot.jump.user.dto.UserDto;
 import springboot.jump.user.form.ChangePasswordForm;
 import springboot.jump.user.form.UserCreateForm;
 import springboot.jump.user.form.UserFindPasswordForm;
-import springboot.jump.util.MailService;
+import springboot.jump.common.util.MailService;
 
 import java.util.UUID;
 

@@ -1,4 +1,4 @@
-package springboot.jump.util.resolver;
+package springboot.jump.common.util.resolver;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

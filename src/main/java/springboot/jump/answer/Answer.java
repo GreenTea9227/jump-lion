@@ -2,7 +2,7 @@ package springboot.jump.answer;
 
 import jakarta.persistence.*;
 import lombok.*;
-import springboot.jump.basetime.BaseTime;
+import springboot.jump.common.basetime.BaseTime;
 import springboot.jump.manytomany.AnswerSiteUser;
 import springboot.jump.question.Question;
 import springboot.jump.user.SiteUser;

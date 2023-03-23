@@ -1,4 +1,4 @@
-package springboot.jump.util.resolver;
+package springboot.jump.common.util.resolver;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;

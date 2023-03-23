@@ -21,7 +21,6 @@ class QuestionControllerTest {
 
     @Autowired
     private WebApplicationContext context; // MockMvc 객체 생성을 위한 context
-    private MockMvc mockMvc;
 
 //    @Autowired
 //    TestController testController;	// 테스트를 진행할 controller
@@ -52,7 +51,7 @@ class QuestionControllerTest {
     void list() throws Exception {
         mvc.perform(get("/question/list"))
                 .andExpect(model().attributeExists("paging"))
-                .andExpect(view().name("uestion/question_list"))
+                .andExpect(view().name("question/question_list"))
                 .andExpect(status().isOk());
     }
 

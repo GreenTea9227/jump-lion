@@ -1,4 +1,4 @@
-package springboot.jump.basetime;
+package springboot.jump.common.basetime;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;

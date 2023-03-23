@@ -1,4 +1,4 @@
-package springboot.jump.util;
+package springboot.jump.common.util;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;

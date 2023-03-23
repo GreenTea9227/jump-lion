@@ -14,7 +14,7 @@ import springboot.jump.manytomany.AnswerSiteUserRepository;
 import springboot.jump.manytomany.QuestionSiteUser;
 import springboot.jump.manytomany.QuestionSiteUserRepository;
 import springboot.jump.user.SiteUser;
-import springboot.jump.util.resolver.QuestionForm;
+import springboot.jump.common.util.resolver.QuestionForm;
 
 import java.util.List;
 import java.util.Optional;
@@ -78,7 +78,6 @@ public class QuestionService {
                 .orElseThrow(() -> new DataNotFoundException("데이터 없음"));
 
         //questionId로 찾기
-
         List<QuestionSiteUser> listQuestion = questionSiteUserRepository.findByQuestionId(question.getId());
 
         Optional<QuestionSiteUser> find =

@@ -15,8 +15,8 @@ import org.springframework.web.server.ResponseStatusException;
 import springboot.jump.answer.AnswerForm;
 import springboot.jump.user.SiteUser;
 import springboot.jump.user.UserService;
-import springboot.jump.util.resolver.CreateQuestion;
-import springboot.jump.util.resolver.QuestionForm;
+import springboot.jump.common.util.resolver.CreateQuestion;
+import springboot.jump.common.util.resolver.QuestionForm;
 
 import java.security.Principal;
 

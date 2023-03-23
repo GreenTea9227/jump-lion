@@ -1,12 +1,18 @@
 package springboot.jump.question;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
-import springboot.jump.util.resolver.QuestionForm;
+import springboot.jump.common.util.resolver.QuestionForm;
+import springboot.jump.manytomany.QuestionSiteUser;
+import springboot.jump.manytomany.QuestionSiteUserRepository;
+import springboot.jump.user.SiteUser;
+import springboot.jump.user.UserRepository;
+import springboot.jump.user.UserRole;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,13 +28,27 @@ class QuestionServiceTest {
     @Autowired
     private QuestionService questionService;
 
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private QuestionSiteUserRepository questionSiteUserRepository;
+
+    private String subject;
+    private String content;
+
+    @BeforeEach
+    void before() {
+        subject = "subject";
+        content = "content";
+    }
+
     @Test
     @DisplayName("10개 넣고 getList시 10개 반환 확인")
     void getList() {
         for (int i = 0; i < 10; i++) {
             Question question = Question.builder()
-                    .subject("subject")
-                    .content("content")
+                    .subject(subject)
+                    .content(content)
                     .build();
             questionRepository.save(question);
         }
@@ -40,8 +60,7 @@ class QuestionServiceTest {
     @Test
     @DisplayName("id로 question 찾아오기")
     void getQuestion() {
-        String subject = "subject";
-        String content = "content";
+
         Question question = Question.builder()
                 .subject(subject)
                 .content(content)
@@ -55,9 +74,8 @@ class QuestionServiceTest {
     }
 
     @Test
+    @DisplayName("create test")
     void create() {
-        String subject = "subject";
-        String content = "content";
 
         QuestionForm questionForm = new QuestionForm(subject, content);
         questionService.create(questionForm, null);
@@ -72,7 +90,7 @@ class QuestionServiceTest {
     void pageGetList() {
         for (int i = 0; i < 40; i++) {
             Question question = Question.builder()
-                    .subject("subject")
+                    .subject(subject)
                     .content("content")
                     .build();
             questionRepository.save(question);
@@ -89,8 +107,6 @@ class QuestionServiceTest {
     @DisplayName("page test")
     void modify() {
         //given
-        String subject = "subject";
-        String content = "content";
 
         QuestionForm questionForm = new QuestionForm(subject, content);
         questionService.create(questionForm, null);
@@ -114,12 +130,12 @@ class QuestionServiceTest {
     }
 
     @Test
-    @DisplayName("page test")
+    @DisplayName("delte test")
     void delete() {
         //given
         Question save = questionRepository.save(Question.builder()
-                .subject("subject")
-                .content("content")
+                .subject(subject)
+                .content(content)
                 .build());
         //when
         questionService.delete(save);
@@ -128,5 +144,34 @@ class QuestionServiceTest {
         Optional<Question> findQuestion = questionRepository.findById(save.getId());
 
         assertThat(findQuestion).isEmpty();
+    }
+
+    @Test
+    @DisplayName("추천을 누를시 저장이 제대로 되는지 확인")
+    void vote() {
+        //given
+        SiteUser user = SiteUser.builder()
+                .username("username")
+                .password("1111")
+                .role(UserRole.USER)
+                .uuid("uuid1111")
+                .build();
+        userRepository.save(user);
+
+        Question question = Question.builder()
+                .content(content)
+                .subject(subject)
+                .build();
+        questionRepository.save(question);
+
+        //when
+        questionService.vote(question.getId(), user);
+
+        //then
+        List<QuestionSiteUser> byQuestionId = questionSiteUserRepository.findByQuestionId(question.getId());
+        QuestionSiteUser questionSiteUser = byQuestionId.get(0);
+
+        assertThat(questionSiteUser.getQuestion()).isEqualTo(question);
+        assertThat(questionSiteUser.getSiteUser()).isEqualTo(user);
     }
 }

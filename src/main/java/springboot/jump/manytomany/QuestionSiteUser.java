@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import springboot.jump.basetime.BaseTime;
+import springboot.jump.common.basetime.BaseTime;
 import springboot.jump.question.Question;
 import springboot.jump.user.SiteUser;
 
