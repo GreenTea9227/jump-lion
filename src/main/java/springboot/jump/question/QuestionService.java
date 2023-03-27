@@ -9,6 +9,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import springboot.jump.answer.Answer;
+import springboot.jump.category.CategoryQuestion;
+import springboot.jump.category.CategoryQuestionRepository;
+import springboot.jump.category.Category;
+import springboot.jump.category.CategoryRepository;
 import springboot.jump.exception.DataNotFoundException;
 import springboot.jump.manytomany.AnswerSiteUserRepository;
 import springboot.jump.manytomany.QuestionSiteUser;
@@ -27,6 +31,8 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
     private final QuestionSiteUserRepository questionSiteUserRepository;
     private final AnswerSiteUserRepository answerSiteUserRepository;
+    private final CategoryRepository categoryRepository;
+    private final CategoryQuestionRepository cateGoryQuestionRepository;
 
     public List<Question> getList() {
         return questionRepository.findAll();
@@ -40,18 +46,46 @@ public class QuestionService {
     }
 
     public Question getQuestion(Long id) {
-        return questionRepository.findById(id).orElseThrow(() ->
-                new DataNotFoundException("데이터 없음"));
+        Question question = questionRepository.findWithQuestionId(id);
+
+        if (question == null) {
+            throw new DataNotFoundException("데이터 없음");
+        }
+
+        return question;
+
     }
 
     public void create(QuestionForm form, SiteUser siteUser) {
+
+
+        String categoryName = form.getCategoryName();
+        String[] split = new String[0];
+
+        if (categoryName != null) {
+            split = categoryName.split(",");
+        }
+
+
         Question question = Question.builder()
                 .subject(form.getSubject())
                 .content(form.getContent())
                 .siteUser(siteUser)
                 .build();
 
+
+        for (String s : split) {
+            Category category = new Category(s);
+            categoryRepository.save(category);
+
+            CategoryQuestion categoryQuestion = CategoryQuestion.create(category, question);
+            cateGoryQuestionRepository.save(categoryQuestion);
+        }
+
+
         questionRepository.save(question);
+
+
     }
 
     public Page<Question> getList(int page, String kw) {

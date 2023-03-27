@@ -6,13 +6,17 @@ import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import springboot.jump.answer.Answer;
 import springboot.jump.answer.AnswerForm;
+import springboot.jump.answer.AnswerService;
 import springboot.jump.user.SiteUser;
 import springboot.jump.user.UserService;
 import springboot.jump.common.util.resolver.CreateQuestion;
@@ -28,6 +32,7 @@ public class QuestionController {
 
     private final QuestionService questionService;
     private final UserService userService;
+    private final AnswerService answerService;
 
     @GetMapping("/list")
     public String list(Model model, @RequestParam(defaultValue = "0") int page,
@@ -40,9 +45,12 @@ public class QuestionController {
     }
 
     @GetMapping("/detail/{id}")
-    public String detail(Model model, @PathVariable Long id, AnswerForm answerForm) {
+    public String detail(Model model, @PathVariable Long id, AnswerForm answerForm
+            ,@RequestParam(value = "answerPage",defaultValue = "0") int answerPage) {
         Question question = questionService.getQuestion(id);
+        Page<Answer> answers = answerService.findAnswerByQuestion(id, answerPage);
         model.addAttribute("question", question);
+        model.addAttribute("answers",answers);
         return "question/question_detail";
     }
 
@@ -57,6 +65,7 @@ public class QuestionController {
         if (bindingResult.hasErrors()) {
             return "question/question_form";
         }
+
         SiteUser siteUser = userService.getUser(principal.getName());
 
         questionService.create(questionForm, siteUser);
@@ -65,10 +74,10 @@ public class QuestionController {
 
     @GetMapping("/modify/{id}")
     public String questionModify(QuestionForm questionForm, @PathVariable Long id,
-                                 UsernamePasswordAuthenticationToken auth) {
+                                 @AuthenticationPrincipal User auth) {
         log.info("authentication ={}", auth);
         Question question = questionService.getQuestion(id);
-        if (!question.getAuthor().getUsername().equals(auth.getName())) {
+        if (!question.getAuthor().getUsername().equals(auth.getUsername())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
         }
         questionForm.setSubject(question.getSubject());
@@ -104,7 +113,7 @@ public class QuestionController {
     }
 
     @GetMapping("/vote/{id}")
-    public String questionVote(Principal principal, @PathVariable Long id) throws ChangeSetPersister.NotFoundException {
+    public String questionVote(Principal principal, @PathVariable Long id) {
 
         SiteUser user = userService.getUser(principal.getName());
         questionService.vote(id, user);

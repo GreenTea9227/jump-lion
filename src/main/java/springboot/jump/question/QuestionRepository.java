@@ -20,6 +20,9 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     Page<Question> findAll(Specification<Question> spec, Pageable pageable);
 
+    @Query("select q from Question q where q.id = :id")
+    Question findWithQuestionId(@Param("id") Long id);
+
     @Query("select distinct q from Question q left join SiteUser s on q.author = s " +
             "left join Answer a on a.question = q " +
             "left join SiteUser s2 on a.author = s2 " +

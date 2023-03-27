@@ -40,6 +40,7 @@ class QuestionServiceTest {
     void before() {
         subject = "subject";
         content = "content";
+        userRepository.deleteAll();
     }
 
     @Test

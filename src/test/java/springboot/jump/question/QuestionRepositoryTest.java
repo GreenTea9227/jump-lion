@@ -1,5 +1,6 @@
 package springboot.jump.question;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +18,20 @@ class QuestionRepositoryTest {
     @Autowired
     private QuestionRepository questionRepository;
 
+    String content;
+    String subject;
+
+    @BeforeEach
+    void setBefore() {
+         content = "content";
+         subject = "subject";
+    }
+
     @Test
     @DisplayName("제목으로 찾기")
     void findBySubject() {
         //given
-        String content = "content";
-        String subject = "subject";
+
         Question question = Question.builder()
                 .content(content)
                 .subject(subject).build();
@@ -42,8 +51,7 @@ class QuestionRepositoryTest {
     @DisplayName("findBySubjectAndContent 실패 케이스")
     void findBySubjectAndContent() {
         //given
-        String content = "content";
-        String subject = "subject";
+
         Question question = Question.builder()
                 .content(content)
                 .subject(subject)
@@ -64,8 +72,7 @@ class QuestionRepositoryTest {
     @DisplayName("findBySubjectAndContent 잘못 입력시 null값 반환")
     void passFindBySubjectAndContent() {
         //given
-        String content = "content";
-        String subject = "subject";
+
         Question question = Question.builder()
                 .content(content)
                 .subject(subject)
@@ -81,8 +88,7 @@ class QuestionRepositoryTest {
     @DisplayName("like 연산")
     void findBySubjectLike() {
         //given
-        String content = "content";
-        String subject = "subject";
+
         Question question = Question.builder()
                 .content(content)
                 .subject(subject)
@@ -126,5 +132,18 @@ class QuestionRepositoryTest {
         //then
         assertThat(all).isNotEmpty();
         assertThat(all).containsExactly(question, question2);
+    }
+
+    @Test
+    void findWithQuestionId() {
+        Question question = Question.builder()
+                .content(content)
+                .subject(subject)
+                .build();
+        questionRepository.save(question);
+
+        Question findQuestion = questionRepository.findWithQuestionId(question.getId());
+
+        assertThat(findQuestion).isEqualTo(question);
     }
 }

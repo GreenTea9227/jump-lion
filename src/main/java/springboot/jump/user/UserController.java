@@ -66,8 +66,8 @@ public class UserController {
     }
 
     @GetMapping("/findPassword")
-    public String findPassword(UserFindPasswordForm userFindPasswordForm) {
-
+    public String findPassword( Model model) {
+        model.addAttribute("userFindPasswordForm",new UserFindPasswordForm());
         return "user/find_password";
     }
 
@@ -81,6 +81,7 @@ public class UserController {
 
         String findEmail = userService.findPasswordForm(userFindPasswordForm);
         if (findEmail == null) {
+            bindingResult.reject("noEmail","가입한적이 없습니다.");
             return "user/find_password";
         }
 
@@ -93,6 +94,12 @@ public class UserController {
         mailService.sendMail(email, uuid);
         HttpSession session = request.getSession();
         session.setAttribute("email", email);
+
+        return "redirect:/user/uuidcheck";
+    }
+
+    @GetMapping("/uuidcheck")
+    public String uuidCheck() {
 
         return "user/uuid_check";
     }

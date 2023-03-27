@@ -3,6 +3,7 @@ package springboot.jump.question;
 import jakarta.persistence.*;
 import lombok.*;
 import springboot.jump.answer.Answer;
+import springboot.jump.category.CategoryQuestion;
 import springboot.jump.common.basetime.BaseTime;
 import springboot.jump.manytomany.QuestionSiteUser;
 import springboot.jump.user.SiteUser;
@@ -29,14 +30,16 @@ public class Question extends BaseTime {
     @ManyToOne
     private SiteUser author;
 
-//    @ManyToMany
-//    private Set<SiteUser> voter;
-
     @OneToMany(mappedBy = "question")
     private Set<QuestionSiteUser> voter = new HashSet<>();
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private List<Answer> answers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "question",cascade = CascadeType.REMOVE)
+    private List<CategoryQuestion> categoryQuestions = new ArrayList<>();
+
+
 
     @Builder
     public Question(String subject, String content, SiteUser siteUser) {
