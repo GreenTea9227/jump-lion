@@ -8,6 +8,7 @@ import springboot.jump.exception.DataNotFoundException;
 import springboot.jump.user.dto.UserDto;
 import springboot.jump.user.form.ChangePasswordForm;
 import springboot.jump.user.form.UserFindPasswordForm;
+import springboot.jump.user.security.UserSecurityService;
 
 import java.util.Optional;
 
@@ -43,7 +44,7 @@ public class UserService {
         Optional<SiteUser> siteUser = userRepository.findByUsername(username);
         if (siteUser.isPresent()) {
 
-            return  UserDto.builder()
+            return UserDto.builder()
                     .email(siteUser.get().getEmail())
                     .role(siteUser.get().getRole())
                     .username(siteUser.get().getUsername()).build();

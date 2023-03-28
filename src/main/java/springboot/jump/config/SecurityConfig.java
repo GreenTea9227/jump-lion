@@ -1,6 +1,6 @@
 package springboot.jump.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,20 +12,24 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import springboot.jump.user.UserProvider;
-import springboot.jump.user.UserSecurityService;
+import springboot.jump.oauth2.OAuth2Service;
+import springboot.jump.user.UserRepository;
+import springboot.jump.user.security.UserProvider;
+import springboot.jump.user.security.UserSecurityService;
 
 @Configuration
+@RequiredArgsConstructor
 @EnableMethodSecurity
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    public UserSecurityService userSecurityService;
+    public final UserSecurityService userSecurityService;
+    public final UserRepository userRepository;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -45,6 +49,11 @@ public class SecurityConfig {
                                 .requestMatchers("/question/list", "/user/**",
                                         "/error", "/", "/image/**", "/css/**").permitAll()
                                 .anyRequest().authenticated());
+        http.oauth2Login()
+                .loginPage("/user/login")
+                .defaultSuccessUrl("/")
+                .userInfoEndpoint(auth -> auth.userService(oAuth2UserService()));
+
         http.logout()
                 .logoutSuccessUrl("/")
                 .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
@@ -81,5 +90,10 @@ public class SecurityConfig {
     @Bean
     public UserProvider userProvider() {
         return new UserProvider(userSecurityService, passwordEncoder());
+    }
+
+    @Bean
+    public OAuth2UserService oAuth2UserService() {
+        return new OAuth2Service(userRepository, passwordEncoder());
     }
 }

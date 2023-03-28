@@ -2,12 +2,10 @@ package springboot.jump.question;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,10 +15,11 @@ import org.springframework.web.server.ResponseStatusException;
 import springboot.jump.answer.Answer;
 import springboot.jump.answer.AnswerForm;
 import springboot.jump.answer.AnswerService;
-import springboot.jump.user.SiteUser;
-import springboot.jump.user.UserService;
 import springboot.jump.common.util.resolver.CreateQuestion;
 import springboot.jump.common.util.resolver.QuestionForm;
+import springboot.jump.oauth2.PrincipalUser;
+import springboot.jump.user.SiteUser;
+import springboot.jump.user.UserService;
 
 import java.security.Principal;
 
@@ -46,11 +45,11 @@ public class QuestionController {
 
     @GetMapping("/detail/{id}")
     public String detail(Model model, @PathVariable Long id, AnswerForm answerForm
-            ,@RequestParam(value = "answerPage",defaultValue = "0") int answerPage) {
+            , @RequestParam(value = "answerPage", defaultValue = "0") int answerPage) {
         Question question = questionService.getQuestion(id);
         Page<Answer> answers = answerService.findAnswerByQuestion(id, answerPage);
         model.addAttribute("question", question);
-        model.addAttribute("answers",answers);
+        model.addAttribute("answers", answers);
         return "question/question_detail";
     }
 
@@ -74,7 +73,7 @@ public class QuestionController {
 
     @GetMapping("/modify/{id}")
     public String questionModify(QuestionForm questionForm, @PathVariable Long id,
-                                 @AuthenticationPrincipal User auth) {
+                                 @AuthenticationPrincipal PrincipalUser auth) {
         log.info("authentication ={}", auth);
         Question question = questionService.getQuestion(id);
         if (!question.getAuthor().getUsername().equals(auth.getUsername())) {

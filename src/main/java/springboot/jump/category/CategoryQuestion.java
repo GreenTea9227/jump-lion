@@ -11,7 +11,8 @@ import springboot.jump.question.Question;
 @Entity
 public class CategoryQuestion {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -20,7 +21,7 @@ public class CategoryQuestion {
     @ManyToOne(fetch = FetchType.LAZY)
     private Question question;
 
-    public static CategoryQuestion create(Category category,Question question) {
+    public static CategoryQuestion create(Category category, Question question) {
 
         CategoryQuestion build = CategoryQuestion.builder()
                 .category(category)
@@ -31,6 +32,5 @@ public class CategoryQuestion {
         question.getCategoryQuestions().add(build);
 
         return build;
-
     }
 }

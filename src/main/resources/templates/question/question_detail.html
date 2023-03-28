@@ -32,11 +32,11 @@
                 <span class="badge rounded-pill bg-success" th:text="${#lists.size(question.voter)}"></span>
                 <a th:href="@{|/question/modify/${question.id}|}" class="btn btn-outline-secondary"
                    sec:authorize="isAuthenticated()" th:if="${question.author != null
-                   and #authentication.getPrincipal() == question.author.username}" th:text="수정"></a>
+                   and #authentication.getPrincipal().getUsername() == question.author.username}" th:text="수정"></a>
                 <a href="javascript:void(0)" th:data-uri="@{|/question/delete/${question.id}|}"
                    class="delete btn btn-sm btn-outline-secondary"
                    sec:authorize="isAuthenticated()" th:if="${question.author != null
-                   and #authentication.getPrincipal() == question.author.username}" th:text="삭제"></a>
+                   and #authentication.getPrincipal().getUsername() == question.author.username}" th:text="삭제"></a>
             </div>
         </div>
     </div>
@@ -66,12 +66,12 @@
 
                 <a th:href="@{|/answer/modify/${answer.id}|}" class="btn btn-outline-secondary"
                    sec:authorize="isAuthenticated()" th:if="${answer.author != null
-                   and #authentication.getPrincipal() == answer.author.username}" th:text="수정"></a>
+                   and #authentication.getPrincipal().getUsername() == answer.author.username}" th:text="수정"></a>
 
                 <a href="javascript:void(0)" th:data-uri="@{|/answer/delete/${answer.id}|}"
                    class="delete btn btn-sm btn-outline-secondary"
                    sec:authorize="isAuthenticated()" th:if="${answer.author != null
-                   and #authentication.getPrincipal() == answer.author.username}" th:text="삭제"></a>
+                   and #authentication.getPrincipal().getUsername() == answer.author.username}" th:text="삭제"></a>
             </div>
         </div>
 
