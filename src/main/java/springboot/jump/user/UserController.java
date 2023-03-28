@@ -14,11 +14,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springboot.jump.common.util.MailService;
 import springboot.jump.user.dto.UserDto;
 import springboot.jump.user.form.ChangePasswordForm;
 import springboot.jump.user.form.UserCreateForm;
 import springboot.jump.user.form.UserFindPasswordForm;
-import springboot.jump.common.util.MailService;
+import springboot.jump.user.security.UserSecurityService;
 
 import java.util.UUID;
 
@@ -66,8 +67,8 @@ public class UserController {
     }
 
     @GetMapping("/findPassword")
-    public String findPassword( Model model) {
-        model.addAttribute("userFindPasswordForm",new UserFindPasswordForm());
+    public String findPassword(Model model) {
+        model.addAttribute("userFindPasswordForm", new UserFindPasswordForm());
         return "user/find_password";
     }
 
@@ -81,7 +82,7 @@ public class UserController {
 
         String findEmail = userService.findPasswordForm(userFindPasswordForm);
         if (findEmail == null) {
-            bindingResult.reject("noEmail","가입한적이 없습니다.");
+            bindingResult.reject("noEmail", "가입한적이 없습니다.");
             return "user/find_password";
         }
 

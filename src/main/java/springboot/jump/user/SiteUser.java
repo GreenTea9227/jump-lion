@@ -30,6 +30,8 @@ public class SiteUser {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    private String picture;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

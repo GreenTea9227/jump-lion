@@ -1,16 +1,14 @@
-package springboot.jump.user;
+package springboot.jump.user.security;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import springboot.jump.oauth2.PrincipalUser;
+import springboot.jump.user.SiteUser;
+import springboot.jump.user.UserRepository;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -27,11 +25,6 @@ public class UserSecurityService implements UserDetailsService {
             throw new UsernameNotFoundException("사용자를 찾을 수 없습니다.");
         }
         SiteUser siteUser = optionalSiteUser.get();
-        List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(siteUser.getRole().name()));
-
-        return User.builder()
-                .username(siteUser.getUsername())
-                .password(siteUser.getPassword())
-                .authorities(authorities).build();
+        return new PrincipalUser(siteUser);
     }
 }

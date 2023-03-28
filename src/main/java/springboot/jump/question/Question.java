@@ -2,6 +2,8 @@ package springboot.jump.question;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import springboot.jump.answer.Answer;
 import springboot.jump.category.CategoryQuestion;
 import springboot.jump.common.basetime.BaseTime;
@@ -33,13 +35,12 @@ public class Question extends BaseTime {
     @OneToMany(mappedBy = "question")
     private Set<QuestionSiteUser> voter = new HashSet<>();
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "question")
     private List<Answer> answers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "question",cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     private List<CategoryQuestion> categoryQuestions = new ArrayList<>();
-
-
 
     @Builder
     public Question(String subject, String content, SiteUser siteUser) {

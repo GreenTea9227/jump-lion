@@ -23,8 +23,8 @@ class QuestionRepositoryTest {
 
     @BeforeEach
     void setBefore() {
-         content = "content";
-         subject = "subject";
+        content = "content";
+        subject = "subject";
     }
 
     @Test

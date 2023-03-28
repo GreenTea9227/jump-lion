@@ -2,7 +2,6 @@ package springboot.jump.answer;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.SortNatural;
 import springboot.jump.common.basetime.BaseTime;
 import springboot.jump.manytomany.AnswerSiteUser;
 import springboot.jump.question.Question;
@@ -29,8 +28,7 @@ public class Answer extends BaseTime {
     @ManyToOne
     private SiteUser author;
 
-
-
+    @Builder.Default
     @OneToMany(mappedBy = "answer")
     private Set<AnswerSiteUser> voter = new HashSet<>();
 

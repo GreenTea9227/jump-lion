@@ -9,16 +9,16 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import springboot.jump.answer.Answer;
+import springboot.jump.category.Category;
 import springboot.jump.category.CategoryQuestion;
 import springboot.jump.category.CategoryQuestionRepository;
-import springboot.jump.category.Category;
 import springboot.jump.category.CategoryRepository;
+import springboot.jump.common.util.resolver.QuestionForm;
 import springboot.jump.exception.DataNotFoundException;
 import springboot.jump.manytomany.AnswerSiteUserRepository;
 import springboot.jump.manytomany.QuestionSiteUser;
 import springboot.jump.manytomany.QuestionSiteUserRepository;
 import springboot.jump.user.SiteUser;
-import springboot.jump.common.util.resolver.QuestionForm;
 
 import java.util.List;
 import java.util.Optional;
@@ -53,11 +53,9 @@ public class QuestionService {
         }
 
         return question;
-
     }
 
     public void create(QuestionForm form, SiteUser siteUser) {
-
 
         String categoryName = form.getCategoryName();
         String[] split = new String[0];
@@ -66,13 +64,11 @@ public class QuestionService {
             split = categoryName.split(",");
         }
 
-
         Question question = Question.builder()
                 .subject(form.getSubject())
                 .content(form.getContent())
                 .siteUser(siteUser)
                 .build();
-
 
         for (String s : split) {
             Category category = new Category(s);
@@ -82,10 +78,7 @@ public class QuestionService {
             cateGoryQuestionRepository.save(categoryQuestion);
         }
 
-
         questionRepository.save(question);
-
-
     }
 
     public Page<Question> getList(int page, String kw) {

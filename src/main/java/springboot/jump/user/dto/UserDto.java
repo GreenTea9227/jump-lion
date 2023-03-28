@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 import springboot.jump.user.UserRole;
 
-
 @Getter
 @Setter
 @Builder

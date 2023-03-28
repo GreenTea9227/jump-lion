@@ -3,7 +3,6 @@ package springboot.jump.answer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import springboot.jump.exception.DataNotFoundException;
@@ -90,7 +89,7 @@ public class AnswerService {
     //Sort.by(Sort.Direction.DESC, "vDate");
 
     public Page<Answer> findAnswerByQuestion(Long questionId, int page) {
-        PageRequest pageRequest =  PageRequest.of(page,5);
-        return answerRepository.findWithQuestionId(questionId,pageRequest );
+        PageRequest pageRequest = PageRequest.of(page, 5);
+        return answerRepository.findWithQuestionId(questionId, pageRequest);
     }
 }

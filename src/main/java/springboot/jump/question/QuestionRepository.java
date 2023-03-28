@@ -3,6 +3,7 @@ package springboot.jump.question;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,6 +21,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     Page<Question> findAll(Specification<Question> spec, Pageable pageable);
 
+    @EntityGraph(attributePaths = {"author"})
     @Query("select q from Question q where q.id = :id")
     Question findWithQuestionId(@Param("id") Long id);
 
