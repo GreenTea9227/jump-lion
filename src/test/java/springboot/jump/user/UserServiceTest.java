@@ -35,8 +35,9 @@ class UserServiceTest {
 
     @BeforeEach
     void setArgument() {
-        email = "email@naver.com";
-        username = "username";
+        userRepository.deleteAll();
+        email = "email2@naver.com";
+        username = "username23";
         password = "1111";
         uuid = "uuid1234";
     }
@@ -128,6 +129,7 @@ class UserServiceTest {
     void checkUuid() {
 
         userRepository.save(SiteUser.builder()
+                        .username(username)
                 .email(email)
                 .uuid(uuid)
                 .build());

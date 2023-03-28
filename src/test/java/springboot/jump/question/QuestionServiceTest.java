@@ -154,7 +154,7 @@ class QuestionServiceTest {
     void vote() {
         //given
         SiteUser user = SiteUser.builder()
-                .username("username")
+                .username("username2")
                 .password("1111")
                 .role(UserRole.USER)
                 .email(email)
