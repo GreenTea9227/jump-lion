@@ -35,11 +35,13 @@ class QuestionServiceTest {
 
     private String subject;
     private String content;
+    private String email;
 
     @BeforeEach
     void before() {
         subject = "subject";
         content = "content";
+        email = "email";
         userRepository.deleteAll();
     }
 
@@ -155,6 +157,7 @@ class QuestionServiceTest {
                 .username("username")
                 .password("1111")
                 .role(UserRole.USER)
+                .email(email)
                 .uuid("uuid1111")
                 .build();
         userRepository.save(user);

@@ -28,6 +28,7 @@ public class Answer extends BaseTime {
     @ManyToOne
     private SiteUser author;
 
+    @Builder.Default
     @OneToMany(mappedBy = "answer")
     private Set<AnswerSiteUser> voter = new HashSet<>();
 

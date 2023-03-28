@@ -35,8 +35,8 @@ public class Question extends BaseTime {
     @OneToMany(mappedBy = "question")
     private Set<QuestionSiteUser> voter = new HashSet<>();
 
-    @LazyCollection(LazyCollectionOption.EXTRA)
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "question")
     private List<Answer> answers = new ArrayList<>();
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)

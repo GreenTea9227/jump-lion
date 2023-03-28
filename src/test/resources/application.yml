@@ -1,20 +1,31 @@
 spring:
+  profiles:
+    active: test
+
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
     properties:
       hibernate:
         show_sql: true
         format_sql: true
+
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:testdb
-  profiles:
-    active: test
+
   mail:
     host: no
     username: no
     password: no
     port: 25
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: no
+            client-secret: no
 

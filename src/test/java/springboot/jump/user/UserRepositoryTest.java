@@ -1,5 +1,6 @@
 package springboot.jump.user;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,8 +18,13 @@ class UserRepositoryTest {
     private UserRepository userRepository;
 
     private String username = "user";
-    private String email = "email@naver.com";
+    private String email = "emailEmail@naver.com";
     private String password = "1111";
+
+    @BeforeEach
+    void setBefore() {
+        userRepository.deleteAll();
+    }
 
     @Test
     void findByUsername() {
