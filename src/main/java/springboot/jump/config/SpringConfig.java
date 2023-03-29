@@ -6,9 +6,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import springboot.jump.aggregate.question.Question;
+import springboot.jump.aggregate.question.QuestionRepository;
 import springboot.jump.common.util.resolver.QuestionResolver;
-import springboot.jump.question.Question;
-import springboot.jump.question.QuestionRepository;
 
 import java.util.List;
 

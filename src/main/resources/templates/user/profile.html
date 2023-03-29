@@ -36,12 +36,12 @@
 <script layout:fragment="script" type="text/javascript">
 
     let changeBtn = document.querySelector(".change");
-    changeBtn.addEventListener('click',function () {
+    changeBtn.addEventListener('click', function () {
         let elementNodeListOf = document.querySelectorAll('.changeInput');
-         elementNodeListOf.forEach(n => {
-             n.disabled =false;
-         });
-         document.querySelector(".hiding").classList.remove("d-none");
+        elementNodeListOf.forEach(n => {
+            n.disabled = false;
+        });
+        document.querySelector(".hiding").classList.remove("d-none");
     });
 </script>
 </body>

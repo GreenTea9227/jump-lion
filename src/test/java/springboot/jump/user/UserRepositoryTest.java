@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import springboot.jump.aggregate.user.SiteUser;
+import springboot.jump.aggregate.user.UserRepository;
+import springboot.jump.aggregate.user.UserRole;
 
 import java.util.Optional;
 
@@ -28,7 +31,7 @@ class UserRepositoryTest {
 
     @Test
     void findByUsername() {
-        //givne
+        //given
         SiteUser user = SiteUser.builder()
                 .username(username)
                 .email(email)

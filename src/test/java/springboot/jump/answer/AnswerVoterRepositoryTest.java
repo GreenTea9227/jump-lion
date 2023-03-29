@@ -1,16 +1,13 @@
 package springboot.jump.answer;
 
-import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 import springboot.jump.aggregate.answer.Answer;
 import springboot.jump.aggregate.answer.AnswerRepository;
-import springboot.jump.aggregate.question.Question;
 import springboot.jump.aggregate.question.QuestionRepository;
 import springboot.jump.aggregate.user.SiteUser;
 import springboot.jump.aggregate.user.UserRepository;
@@ -23,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
 @SpringBootTest
-class AnswerRepositoryTest {
+class AnswerVoterRepositoryTest {
 
     @Autowired
     AnswerRepository answerRepository;
@@ -36,7 +33,7 @@ class AnswerRepositoryTest {
     UserRepository userRepository;
 
     @Autowired
-    EntityManager em;
+    EntityManagerFactory emf;
 
     private String content;
     private String subject;
@@ -54,61 +51,31 @@ class AnswerRepositoryTest {
     @Test
     void findWithQuestionId() {
 
-        Question question = Question.builder()
-                .subject(subject)
+        Answer answer = Answer.builder()
                 .content(content)
                 .build();
-        questionRepository.save(question);
+        answerRepository.save(answer);
 
-        Answer answer1 = Answer.builder()
-                .content(content)
-                .question(question)
-                .build();
-        answerRepository.save(answer1);
-
-        Answer answer2 = Answer.builder()
-                .content(content)
-                .question(question)
-                .build();
-        answerRepository.save(answer2);
-
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 15; i++) {
             SiteUser siteUser = SiteUser.builder()
                     .email(email + i)
                     .username(username + i)
                     .build();
             userRepository.save(siteUser);
 
+            answer.setAuthor(siteUser);
+
             AnswerVoter answerVoter = AnswerVoter.builder()
-                    .answer(answer1)
+                    .answer(answer)
                     .siteUser(siteUser)
                     .build();
             answerVoterRepository.save(answerVoter);
-            answer1.getVoter().add(answerVoter);
         }
 
-        for (int i = 10; i < 20; i++) {
-            SiteUser siteUser = SiteUser.builder()
-                    .email(email + i)
-                    .username(username + i)
-                    .build();
-            userRepository.save(siteUser);
-
-            AnswerVoter answerVoter = AnswerVoter.builder()
-                    .answer(answer2)
-                    .siteUser(siteUser)
-                    .build();
-            answerVoterRepository.save(answerVoter);
-            answer2.getVoter().add(answerVoter);
-        }
-
-        PageRequest pageRequest = PageRequest.of(0, 5);
-        Page<Answer> answers = answerRepository.findWithQuestionId(question.getId(), pageRequest);
-
-        assertThat(answers.getContent()).size().isEqualTo(2);
-
-        List<Answer> contents = answers.getContent();
-        assertThat(contents.get(0).getVoter()).size().isEqualTo(10);
-        assertThat(contents.get(1).getVoter()).size().isEqualTo(5);
+        List<AnswerVoter> list = answerVoterRepository.findByAnswerId(answer.getId());
+        AnswerVoter answerVoter = list.get(0);
+        assertThat(emf.getPersistenceUnitUtil().isLoaded(answerVoter.getSiteUser())).isTrue();
+        assertThat(emf.getPersistenceUnitUtil().isLoaded(answerVoter.getAnswer())).isTrue();
+        assertThat(list).size().isEqualTo(15);
     }
 }

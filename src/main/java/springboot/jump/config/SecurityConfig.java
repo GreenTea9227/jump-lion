@@ -17,10 +17,10 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import springboot.jump.oauth2.OAuth2Service;
-import springboot.jump.user.UserRepository;
-import springboot.jump.user.security.UserProvider;
-import springboot.jump.user.security.UserSecurityService;
+import springboot.jump.aggregate.user.UserRepository;
+import springboot.jump.security.formlogin.UserProvider;
+import springboot.jump.security.formlogin.UserSecurityService;
+import springboot.jump.security.oauth2.OAuth2Service;
 
 @Configuration
 @RequiredArgsConstructor

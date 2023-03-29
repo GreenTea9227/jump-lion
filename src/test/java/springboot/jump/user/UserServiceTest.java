@@ -7,9 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import springboot.jump.user.dto.UserDto;
-import springboot.jump.user.form.ChangePasswordForm;
-import springboot.jump.user.form.UserFindPasswordForm;
+import springboot.jump.aggregate.user.SiteUser;
+import springboot.jump.aggregate.user.UserRepository;
+import springboot.jump.aggregate.user.UserRole;
+import springboot.jump.aggregate.user.UserService;
+import springboot.jump.aggregate.user.dto.UserDto;
+import springboot.jump.aggregate.user.form.ChangePasswordForm;
+import springboot.jump.aggregate.user.form.UserFindPasswordForm;
 
 import java.util.Optional;
 
@@ -129,7 +133,7 @@ class UserServiceTest {
     void checkUuid() {
 
         userRepository.save(SiteUser.builder()
-                        .username(username)
+                .username(username)
                 .email(email)
                 .uuid(uuid)
                 .build());

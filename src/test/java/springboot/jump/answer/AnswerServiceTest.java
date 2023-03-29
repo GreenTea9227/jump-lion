@@ -6,8 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import springboot.jump.question.Question;
-import springboot.jump.question.QuestionRepository;
+import springboot.jump.aggregate.answer.Answer;
+import springboot.jump.aggregate.answer.AnswerRepository;
+import springboot.jump.aggregate.answer.AnswerService;
+import springboot.jump.aggregate.question.Question;
+import springboot.jump.aggregate.question.QuestionRepository;
 
 import java.util.List;
 import java.util.Optional;

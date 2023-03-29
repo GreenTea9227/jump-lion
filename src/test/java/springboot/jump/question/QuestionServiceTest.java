@@ -7,12 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
+import springboot.jump.aggregate.question.Question;
+import springboot.jump.aggregate.question.QuestionRepository;
+import springboot.jump.aggregate.question.QuestionService;
+import springboot.jump.aggregate.user.SiteUser;
+import springboot.jump.aggregate.user.UserRepository;
+import springboot.jump.aggregate.user.UserRole;
+import springboot.jump.aggregate.voter.QuestionVoter;
+import springboot.jump.aggregate.voter.QuestionVoterRepository;
 import springboot.jump.common.util.resolver.QuestionForm;
-import springboot.jump.manytomany.QuestionSiteUser;
-import springboot.jump.manytomany.QuestionSiteUserRepository;
-import springboot.jump.user.SiteUser;
-import springboot.jump.user.UserRepository;
-import springboot.jump.user.UserRole;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +34,7 @@ class QuestionServiceTest {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private QuestionSiteUserRepository questionSiteUserRepository;
+    private QuestionVoterRepository questionVoterRepository;
 
     private String subject;
     private String content;
@@ -172,10 +175,10 @@ class QuestionServiceTest {
         questionService.vote(question.getId(), user);
 
         //then
-        List<QuestionSiteUser> byQuestionId = questionSiteUserRepository.findByQuestionId(question.getId());
-        QuestionSiteUser questionSiteUser = byQuestionId.get(0);
+        List<QuestionVoter> byQuestionId = questionVoterRepository.findByQuestionId(question.getId());
+        QuestionVoter questionVoter = byQuestionId.get(0);
 
-        assertThat(questionSiteUser.getQuestion()).isEqualTo(question);
-        assertThat(questionSiteUser.getSiteUser()).isEqualTo(user);
+        assertThat(questionVoter.getQuestion()).isEqualTo(question);
+        assertThat(questionVoter.getSiteUser()).isEqualTo(user);
     }
 }

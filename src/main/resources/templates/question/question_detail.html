@@ -14,7 +14,8 @@
         <div class="card-body">
             <div class="card-text" th:utext="${@commonUtil.markdown(question.content)}"></div>
             <div class="d-flex justify-content-end">
-                <div class="rounded-pill p-3 mb-2 bg-secondary text-white" th:each="cate : ${question.categoryQuestions}">
+                <div class="rounded-pill p-3 mb-2 bg-secondary text-white"
+                     th:each="cate : ${question.categoryQuestions}">
                     <div th:text="${cate.category.getCategoryName()}"></div>
                 </div>
                 <div th:if="${question.modifiedDate != null}" class="badge bg-light text-dark p-2 text-start mx-3">
