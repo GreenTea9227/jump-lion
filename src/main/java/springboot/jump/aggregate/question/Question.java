@@ -10,8 +10,8 @@ import springboot.jump.common.basetime.BaseTime;
 
 import java.util.*;
 
-@AllArgsConstructor
-@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter
 @Getter
 @Entity
@@ -27,8 +27,10 @@ public class Question extends BaseTime {
     @Column(columnDefinition = "TEXT")
     private String content;
 
+    private Long totalVisit;
     @ManyToOne
     private SiteUser author;
+
 
     @OneToMany(mappedBy = "question")
     private Set<QuestionVoter> voter = new HashSet<>();
@@ -44,6 +46,7 @@ public class Question extends BaseTime {
         this.author = siteUser;
         this.content = content;
         this.subject = subject;
+        this.totalVisit = 0L;
     }
 
     @Override
@@ -51,11 +54,11 @@ public class Question extends BaseTime {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Question question = (Question) o;
-        return Objects.equals(getId(), question.getId()) && Objects.equals(getSubject(), question.getSubject()) && Objects.equals(getContent(), question.getContent()) && Objects.equals(getAuthor(), question.getAuthor());
+        return Objects.equals(getSubject(), question.getSubject()) && Objects.equals(getContent(), question.getContent()) && Objects.equals(getTotalVisit(), question.getTotalVisit()) && Objects.equals(getAuthor(), question.getAuthor());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getSubject(), getContent(), getAuthor());
+        return Objects.hash(getSubject(), getContent(), getTotalVisit(), getAuthor());
     }
 }

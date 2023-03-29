@@ -2,6 +2,7 @@ package springboot.jump.aggregate.answer;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,6 +17,7 @@ import springboot.jump.aggregate.question.Question;
 import springboot.jump.aggregate.question.QuestionService;
 import springboot.jump.aggregate.user.SiteUser;
 import springboot.jump.aggregate.user.UserService;
+import springboot.jump.security.oauth2.PrincipalUser;
 
 import java.security.Principal;
 
@@ -33,12 +35,12 @@ public class AnswerController {
             , BindingResult bindingResult, Principal principal) {
 
         Question question = questionService.getQuestion(id);
-        SiteUser siteUser = userService.getUser(principal.getName());
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("question", question);
-            return "question/question_detail";
+            return "redirect:/question/question_detail/"+question.getId();
         }
+
+        SiteUser siteUser = userService.getUser(principal.getName());
 
         Answer answer = answerService.create(question, answerForm.getContent(), siteUser);
 

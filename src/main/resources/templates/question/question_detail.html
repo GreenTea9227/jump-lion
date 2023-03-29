@@ -9,7 +9,11 @@
 <body>
 <div layout:fragment="content" class="container my-3">
     <!-- 질문 -->
-    <h2 class="border-bottom py-2" th:text="${question.subject}"></h2>
+    <div class="d-flex justify-content-between">
+        <h2 class="border-bottom py-2" th:text="${question.subject}"></h2>
+        <h2 class="border-bottom py-2" th:text="|조회수 : ${question.totalVisit}|"></h2>
+    </div>
+
     <div class="card my-3">
         <div class="card-body">
             <div class="card-text" th:utext="${@commonUtil.markdown(question.content)}"></div>

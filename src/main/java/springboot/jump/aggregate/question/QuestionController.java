@@ -1,5 +1,7 @@
 package springboot.jump.aggregate.question;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -33,6 +35,8 @@ public class QuestionController {
     private final UserService userService;
     private final AnswerService answerService;
 
+    private final String VISITED ="visited";
+
     @GetMapping("/list")
     public String list(Model model, @RequestParam(defaultValue = "0") int page,
                        @RequestParam(defaultValue = "") String kw) {
@@ -45,8 +49,19 @@ public class QuestionController {
 
     @GetMapping("/detail/{id}")
     public String detail(Model model, @PathVariable Long id, AnswerForm answerForm
-            , @RequestParam(value = "answerPage", defaultValue = "0") int answerPage) {
+            , @RequestParam(value = "answerPage", defaultValue = "0") int answerPage,
+                         @CookieValue(name = "visited",required = false) String visited,
+                         HttpServletResponse response) {
+
+        if (visited == null) {
+            Cookie cookie = new Cookie("visited",VISITED);
+            cookie.setMaxAge(3600 * 24 * 30);
+            response.addCookie(cookie);
+            questionService.increaseVisitCount(id);
+        }
+
         Question question = questionService.getQuestion(id);
+
         Page<Answer> answers = answerService.findAnswerByQuestion(id, answerPage);
         //TODO 이미 answers안에 있으므로 최적화
 

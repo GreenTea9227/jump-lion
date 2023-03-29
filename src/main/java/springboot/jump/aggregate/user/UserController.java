@@ -115,6 +115,7 @@ public class UserController {
         if (!userService.checkUuid(email, uuid)) {
             return "user/uuid_check";
         }
+        session.removeAttribute("email");
 
         return "redirect:/user/changepwd";
     }
@@ -154,7 +155,6 @@ public class UserController {
         return "/user/change_password";
     }
 
-    //    @PreAuthorize("isAuthenticated() && #changePasswordForm.getEmail().equals(authentication.getName())")
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/user/authenticated/changepwd")
     public String changePasswordAuth(@Validated ChangePasswordForm changePasswordForm, BindingResult bindingResult) {

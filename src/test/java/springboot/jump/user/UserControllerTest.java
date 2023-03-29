@@ -4,30 +4,55 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
+import springboot.jump.aggregate.user.UserService;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@Transactional
+@AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class UserControllerTest {
 
+    @Autowired
     private MockMvc mvc;
 
     @Autowired
-    private WebApplicationContext context;
+    private UserService userService;
 
-    @BeforeEach
-    public void setMvc() {
-        mvc = MockMvcBuilders.webAppContextSetup(context)
-                .build();
+    @Test
+    @DisplayName("권한 없을시 login page로 redirect")
+    void notFound() throws Exception {
+        mvc.perform(get("/user/profile"))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("http://localhost/user/login"));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = {"USER"})
+    @DisplayName("권한이 있다면 profile페이지 접근 가능")
+    void successFound() throws Exception {
+        userService.create("user","email123@naver.com","1111");
+
+        mvc.perform(get("/user/profile"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/profile"));
     }
 
     @Test
@@ -56,7 +81,7 @@ class UserControllerTest {
         map.add("email", "email@naver.com");
 
         mvc.perform(post("/user/signup")
-                        .params(map))
+                        .params(map).with(csrf()))
                 .andExpect(view().name("redirect:/"))
                 .andExpect(status().is3xxRedirection());
     }
@@ -71,7 +96,7 @@ class UserControllerTest {
         map.add("email", "email@naver.com");
 
         mvc.perform(post("/user/signup")
-                        .params(map))
+                        .params(map).with(csrf()))
                 .andExpect(view().name("sign_form"))
                 .andExpect(status().isOk());
     }
@@ -104,7 +129,11 @@ class UserControllerTest {
     }
 
     @Test
-    void uuidCheck() {
+    @DisplayName("uuidcheck get요청")
+    void uuidCheck() throws Exception {
+        mvc.perform(get("/user/uuidcheck"))
+                .andExpect(view().name("user/uuid_check"))
+                .andExpect(status().isOk());
     }
 
     @Test

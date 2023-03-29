@@ -139,4 +139,11 @@ public class QuestionService {
             }
         };
     }
+
+    public void increaseVisitCount(Long questionId) {
+        Question question = questionRepository.findById(questionId).orElseThrow(()
+                -> new DataNotFoundException(" 해당 id를 가진 질문이 없습니다."));
+        Long totalVisit = question.getTotalVisit();
+        question.setTotalVisit(totalVisit+1);
+    }
 }
