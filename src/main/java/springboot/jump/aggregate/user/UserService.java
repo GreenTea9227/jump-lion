@@ -16,7 +16,7 @@ import springboot.jump.exception.DataNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class UserService {
@@ -26,6 +26,7 @@ public class UserService {
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
 
+    @Transactional
     public SiteUser create(String username, String email, String password) {
         SiteUser siteUser = new SiteUser();
         siteUser.setUsername(username);
@@ -72,6 +73,7 @@ public class UserService {
         return user.getEmail();
     }
 
+    @Transactional
     public void updateUuid(String email, String uuid) {
         SiteUser siteUser = userRepository.findByEmail(email);
         siteUser.setUuid(uuid);
@@ -83,6 +85,7 @@ public class UserService {
         return user.getUuid().equals(uuid);
     }
 
+    @Transactional
     public void changePwd(ChangePasswordForm changePasswordForm) {
         SiteUser siteUser = userRepository.findByEmail(changePasswordForm.getEmail());
         if (siteUser == null)
@@ -91,6 +94,7 @@ public class UserService {
         siteUser.setPassword(passwordEncoder.encode(changePasswordForm.getPassword()));
     }
 
+    @Transactional
     public boolean changeInfo(UserDto userDto, String username) {
         Optional<SiteUser> optionalSiteUser = userRepository.findByUsername(username);
         if (optionalSiteUser.isEmpty()) {

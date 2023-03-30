@@ -23,19 +23,19 @@ import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 @Service
 public class QuestionService {
 
     private final QuestionRepository questionRepository;
     private final QuestionVoterRepository questionVoterRepository;
-    private final AnswerVoterRepository answerVoterRepository;
     private final CategoryRepository categoryRepository;
     private final CategoryQuestionRepository cateGoryQuestionRepository;
 
     public List<Question> getList() {
         return questionRepository.findAll();
     }
+
 
     public Page<Question> getList(int page) {
 
@@ -54,6 +54,7 @@ public class QuestionService {
         return question;
     }
 
+    @Transactional
     public void create(QuestionForm form, SiteUser siteUser) {
 
         String categoryName = form.getCategoryName();
@@ -87,16 +88,19 @@ public class QuestionService {
         return questionRepository.findAll(spec, pageRequest);
     }
 
+    @Transactional
     public void modify(Question question, QuestionForm questionForm) {
         question.setSubject(questionForm.getSubject());
         question.setContent(questionForm.getContent());
         questionRepository.save(question);
     }
 
+    @Transactional
     public void delete(Question question) {
         questionRepository.delete(question);
     }
 
+    @Transactional
     public void vote(Long id, SiteUser siteUser) {
         Question question = questionRepository
                 .findById(id)
@@ -139,6 +143,7 @@ public class QuestionService {
         };
     }
 
+    @Transactional
     public void increaseVisitCount(Long questionId) {
         Question question = questionRepository.findById(questionId).orElseThrow(()
                 -> new DataNotFoundException(" 해당 id를 가진 질문이 없습니다."));

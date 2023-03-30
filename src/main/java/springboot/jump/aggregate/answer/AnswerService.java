@@ -38,6 +38,7 @@ public class AnswerService {
         return answer;
     }
 
+    @Transactional(readOnly = true)
     public Answer getAnswer(Long id) {
         Optional<Answer> optionalAnswer = answerRepository.findById(id);
         if (optionalAnswer.isEmpty()) {
@@ -86,6 +87,7 @@ public class AnswerService {
         return answer.getQuestion().getId();
     }
 
+    @Transactional(readOnly = true)
     public Page<Answer> findAnswerByQuestion(Long questionId, int page) {
         PageRequest pageRequest = PageRequest.of(page, 5);
         return answerRepository.findWithQuestionId(questionId, pageRequest);
