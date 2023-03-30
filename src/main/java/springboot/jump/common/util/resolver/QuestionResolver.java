@@ -5,6 +5,7 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+import springboot.jump.aggregate.question.QuestionForm;
 
 public class QuestionResolver implements HandlerMethodArgumentResolver {
 

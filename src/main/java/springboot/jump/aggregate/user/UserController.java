@@ -3,6 +3,7 @@ package springboot.jump.aggregate.user;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,6 +28,7 @@ import java.util.UUID;
 @RequestMapping("/user")
 @Controller
 public class UserController {
+    private final ApplicationEventPublisher eventPublisher;
     private final UserService userService;
     private final MailService mailService;
 
@@ -92,7 +94,7 @@ public class UserController {
 
         userService.updateUuid(email, uuid);
 
-        mailService.sendMail(email, uuid);
+        eventPublisher.publishEvent(new EmailEvent(email, uuid));
         HttpSession session = request.getSession();
         session.setAttribute("email", email);
 

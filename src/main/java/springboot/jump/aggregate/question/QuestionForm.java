@@ -1,4 +1,4 @@
-package springboot.jump.common.util.resolver;
+package springboot.jump.aggregate.question;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;

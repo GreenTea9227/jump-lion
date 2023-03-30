@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
-public class ControlException {
+public class ControllerException {
 
     @ExceptionHandler(DataNotFoundException.class)
     public String notFound(DataNotFoundException exception, Model model) {

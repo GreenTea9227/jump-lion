@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 import springboot.jump.aggregate.question.Question;
+import springboot.jump.aggregate.question.QuestionForm;
 import springboot.jump.aggregate.question.QuestionRepository;
 import springboot.jump.aggregate.question.QuestionService;
 import springboot.jump.aggregate.user.SiteUser;
@@ -15,7 +16,6 @@ import springboot.jump.aggregate.user.UserRepository;
 import springboot.jump.aggregate.user.UserRole;
 import springboot.jump.aggregate.voter.QuestionVoter;
 import springboot.jump.aggregate.voter.QuestionVoterRepository;
-import springboot.jump.common.util.resolver.QuestionForm;
 
 import java.util.List;
 import java.util.Optional;

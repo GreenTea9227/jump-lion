@@ -111,4 +111,28 @@ class AnswerRepositoryTest {
         assertThat(contents.get(0).getVoter()).size().isEqualTo(10);
         assertThat(contents.get(1).getVoter()).size().isEqualTo(5);
     }
+
+    @Test
+    void findByAuthor_Id() {
+
+        //given
+        SiteUser siteUser = SiteUser.builder()
+                .email(email)
+                .username(username)
+                .build();
+        userRepository.save(siteUser);
+
+        Answer answer = Answer.builder()
+                .content(content)
+                .author(siteUser)
+                .build();
+        answerRepository.save(answer);
+
+        //when
+        List<Answer> findAuthorList = answerRepository.findByAuthor_Id(siteUser.getId());
+
+        //then
+        assertThat(findAuthorList).size().isEqualTo(1);
+        assertThat(findAuthorList.get(0)).isEqualTo(answer);
+    }
 }

@@ -64,7 +64,7 @@ public class AnswerService {
 
         Answer answer = answerRepository
                 .findById(id)
-                .orElseThrow(() -> new DataNotFoundException("데이터 없음"));
+                .orElseThrow(() -> new DataNotFoundException("해당 answer 데이터 없음"));
 
         SiteUser user = userService.getUser(principal.getName());
 

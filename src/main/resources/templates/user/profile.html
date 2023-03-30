@@ -28,6 +28,26 @@
             <label for="inputAddress" class="form-label">Role</label>
             <input type="text" class="form-control" th:field="*{role}" id="inputAddress" placeholder="Role" disabled>
         </div>
+
+        <div class="col-md-7">
+            <div class="col-md-6 d-flex flex-column" th:each="question : *{questions}">
+                <a th:href="@{/question/detail/${question.getId()}}">
+                    <button class="btn btn-primary" th:text="|question ${question.id}|"></button>
+                </a>
+                <div class="my-2">answer</div>
+                <ul class="list-group list-group-horizontal col-md-6 d-inline-flex flex-col"
+                    th:each="answer : ${question.getAnswers()}">
+                    <li class="list-group-item">
+                        <a class="d-inline-flex"
+                           th:href="@{'/question/detail/'+${question.getId()}+'?answer_#'+${answer.id}}">
+                            <button class="btn btn-primary" th:text="${answer.id}"></button>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
         <div class="flex justify-content-end hiding d-none mt-3">
             <button type="submit" class="btn btn-primary submit">제출</button>
         </div>

@@ -1,6 +1,5 @@
 package springboot.jump.aggregate.answer;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,28 +7,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
 import springboot.jump.aggregate.question.Question;
+import springboot.jump.aggregate.question.QuestionForm;
 import springboot.jump.aggregate.question.QuestionRepository;
 import springboot.jump.aggregate.question.QuestionService;
 import springboot.jump.aggregate.user.SiteUser;
 import springboot.jump.aggregate.user.UserRepository;
 import springboot.jump.aggregate.user.UserService;
-import springboot.jump.common.util.resolver.QuestionForm;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Transactional
@@ -54,6 +47,7 @@ class AnswerControllerTest {
 
     SiteUser user;
     Question question;
+
     @BeforeEach
     void setBefore() {
         userRepository.deleteAll();
@@ -61,7 +55,7 @@ class AnswerControllerTest {
         questionService.create(
                 new QuestionForm("subject", "category", "content"), null);
         List<Question> questions = questionRepository.findAll();
-        question =questions.get(0);
+        question = questions.get(0);
     }
 
     @WithMockUser(username = "user")
@@ -69,7 +63,7 @@ class AnswerControllerTest {
     @Test
     void successCreateAnswer() throws Exception {
 
-        mvc.perform(post("/answer/create/" + question.getId())
+        ResultActions resultActions = mvc.perform(post("/answer/create/" + question.getId())
                         .param("content", "change content")
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection());
@@ -78,6 +72,9 @@ class AnswerControllerTest {
         assertThat(findQuestion.getAnswers()).size().isEqualTo(1);
         assertThat(findQuestion.getAnswers().get(0).getContent()).isEqualTo("change content");
 
+        resultActions
+                .andExpect(handler().handlerType(AnswerController.class))
+                .andExpect(handler().methodName("createAnswer"));
     }
 
     @WithMockUser(username = "user")
@@ -88,7 +85,7 @@ class AnswerControllerTest {
         mvc.perform(post("/answer/create/" + question.getId())
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/question/question_detail/"+question.getId()));
+                .andExpect(redirectedUrl("/question/question_detail/" + question.getId()));
     }
 
     @Test

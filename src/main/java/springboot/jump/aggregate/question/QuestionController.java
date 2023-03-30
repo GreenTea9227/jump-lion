@@ -20,7 +20,6 @@ import springboot.jump.aggregate.answer.AnswerService;
 import springboot.jump.aggregate.user.SiteUser;
 import springboot.jump.aggregate.user.UserService;
 import springboot.jump.common.util.resolver.CreateQuestion;
-import springboot.jump.common.util.resolver.QuestionForm;
 import springboot.jump.security.oauth2.PrincipalUser;
 
 import java.security.Principal;
@@ -35,7 +34,7 @@ public class QuestionController {
     private final UserService userService;
     private final AnswerService answerService;
 
-    private final String VISITED ="visited";
+    private final String VISITED = "visited";
 
     @GetMapping("/list")
     public String list(Model model, @RequestParam(defaultValue = "0") int page,
@@ -50,11 +49,11 @@ public class QuestionController {
     @GetMapping("/detail/{id}")
     public String detail(Model model, @PathVariable Long id, AnswerForm answerForm
             , @RequestParam(value = "answerPage", defaultValue = "0") int answerPage,
-                         @CookieValue(name = "visited",required = false) String visited,
+                         @CookieValue(name = "visited", required = false) String visited,
                          HttpServletResponse response) {
 
         if (visited == null) {
-            Cookie cookie = new Cookie("visited",VISITED);
+            Cookie cookie = new Cookie("visited", VISITED);
             cookie.setMaxAge(3600 * 24 * 30);
             response.addCookie(cookie);
             questionService.increaseVisitCount(id);

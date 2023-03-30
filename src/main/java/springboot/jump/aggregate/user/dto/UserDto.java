@@ -5,7 +5,11 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import springboot.jump.aggregate.answer.Answer;
+import springboot.jump.aggregate.question.Question;
 import springboot.jump.aggregate.user.UserRole;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,4 +24,7 @@ public class UserDto {
     private String email;
 
     private UserRole role;
+
+    private List<Question> questions;
+    private List<Answer> answers;
 }

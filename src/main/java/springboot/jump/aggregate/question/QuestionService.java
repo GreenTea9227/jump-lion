@@ -17,7 +17,6 @@ import springboot.jump.aggregate.user.SiteUser;
 import springboot.jump.aggregate.voter.AnswerVoterRepository;
 import springboot.jump.aggregate.voter.QuestionVoter;
 import springboot.jump.aggregate.voter.QuestionVoterRepository;
-import springboot.jump.common.util.resolver.QuestionForm;
 import springboot.jump.exception.DataNotFoundException;
 
 import java.util.List;
@@ -144,6 +143,6 @@ public class QuestionService {
         Question question = questionRepository.findById(questionId).orElseThrow(()
                 -> new DataNotFoundException(" 해당 id를 가진 질문이 없습니다."));
         Long totalVisit = question.getTotalVisit();
-        question.setTotalVisit(totalVisit+1);
+        question.setTotalVisit(totalVisit + 1);
     }
 }

@@ -4,12 +4,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import springboot.jump.aggregate.answer.Answer;
+import springboot.jump.aggregate.answer.AnswerRepository;
+import springboot.jump.aggregate.question.Question;
+import springboot.jump.aggregate.question.QuestionRepository;
 import springboot.jump.aggregate.user.dto.UserDto;
 import springboot.jump.aggregate.user.form.ChangePasswordForm;
 import springboot.jump.aggregate.user.form.UserFindPasswordForm;
 import springboot.jump.exception.DataNotFoundException;
-import springboot.jump.security.formlogin.UserSecurityService;
 
+import java.util.List;
 import java.util.Optional;
 
 @Transactional
@@ -19,7 +23,8 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserSecurityService securityService;
+    private final QuestionRepository questionRepository;
+    private final AnswerRepository answerRepository;
 
     public SiteUser create(String username, String email, String password) {
         SiteUser siteUser = new SiteUser();
@@ -44,10 +49,16 @@ public class UserService {
         Optional<SiteUser> siteUser = userRepository.findByUsername(username);
         if (siteUser.isPresent()) {
 
+            SiteUser findUser = siteUser.get();
+            List<Answer> answerList = answerRepository.findByAuthor_Id(findUser.getId());
+            List<Question> questionList = questionRepository.findByAuthor_Id(findUser.getId());
             return UserDto.builder()
-                    .email(siteUser.get().getEmail())
-                    .role(siteUser.get().getRole())
-                    .username(siteUser.get().getUsername()).build();
+                    .email(findUser.getEmail())
+                    .role(findUser.getRole())
+                    .username(findUser.getUsername())
+                    .answers(answerList)
+                    .questions(questionList)
+                    .build();
         } else {
             throw new DataNotFoundException("siteuser not found");
         }

@@ -31,7 +31,6 @@ public class Question extends BaseTime {
     @ManyToOne
     private SiteUser author;
 
-
     @OneToMany(mappedBy = "question")
     private Set<QuestionVoter> voter = new HashSet<>();
 

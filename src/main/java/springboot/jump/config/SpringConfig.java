@@ -1,34 +1,23 @@
 package springboot.jump.config;
 
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import springboot.jump.aggregate.question.Question;
-import springboot.jump.aggregate.question.QuestionRepository;
-import springboot.jump.common.util.resolver.QuestionResolver;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import java.util.List;
+import java.util.concurrent.Executor;
 
-@Profile("real")
 @Configuration
-public class SpringConfig implements WebMvcConfigurer {
+public class SpringConfig {
 
-    @Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new QuestionResolver());
-    }
-
-    @Bean
-    CommandLineRunner applicationStart(QuestionRepository questionRepository) {
-        return args -> {
-            for (int i = 0; i < 100; i++) {
-                questionRepository.save(Question.builder()
-                        .subject("question" + i)
-                        .content("content" + i).build());
-            }
-        };
+    @Bean("forEmailService")
+    public Executor executorPool() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(4);
+        executor.setMaxPoolSize(4);
+        executor.setThreadNamePrefix("my-");
+        executor.setQueueCapacity(1000);
+        executor.setAllowCoreThreadTimeOut(true);
+        executor.setKeepAliveSeconds(60);
+        return executor;
     }
 }
