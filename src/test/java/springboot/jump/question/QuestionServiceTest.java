@@ -1,12 +1,11 @@
 package springboot.jump.question;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
-import org.springframework.transaction.annotation.Transactional;
 import springboot.jump.aggregate.question.Question;
 import springboot.jump.aggregate.question.QuestionForm;
 import springboot.jump.aggregate.question.QuestionRepository;
@@ -22,7 +21,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Transactional
+//@Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class QuestionServiceTest {
 
@@ -40,11 +39,13 @@ class QuestionServiceTest {
     private String content;
     private String email;
 
-    @BeforeEach
+    @AfterEach
     void before() {
         subject = "subject";
         content = "content";
         email = "email";
+        questionVoterRepository.deleteAll();
+        questionRepository.deleteAll();
         userRepository.deleteAll();
     }
 

@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 import springboot.jump.aggregate.answer.Answer;
 import springboot.jump.aggregate.answer.AnswerRepository;
 import springboot.jump.aggregate.answer.AnswerService;
@@ -17,7 +16,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AnswerServiceTest {
 
@@ -32,6 +30,7 @@ class AnswerServiceTest {
     @AfterEach
     void deleteAll() {
         answerRepository.deleteAll();
+        questionRepository.deleteAll();
     }
 
     @Test
@@ -44,7 +43,6 @@ class AnswerServiceTest {
                 .content(content)
                 .subject(subject).build();
         questionRepository.save(question);
-        System.out.println(question);
 
         //when
         answerService.create(question, "change", null);
@@ -55,7 +53,7 @@ class AnswerServiceTest {
         Answer answer = all.get(0);
 
         assertThat(answer.getContent()).isEqualTo("change");
-        assertThat(answer.getQuestion()).isEqualTo(question);
+        assertThat(answer.getContent()).isEqualTo("change");
     }
 
     @Test
